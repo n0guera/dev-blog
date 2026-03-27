@@ -112,7 +112,6 @@ resources/js/components/
 ```php
 $table->id();
 $table->string('name')->unique();  // 'user', 'admin'
-$table->string('slug')->unique();
 $table->text('description')->nullable();
 $table->timestamps();
 ```
@@ -122,7 +121,6 @@ $table->timestamps();
 ```php
 $table->id();
 $table->string('name')->unique();  // 'draft', 'published'
-$table->string('slug')->unique();
 $table->timestamps();
 ```
 
@@ -131,7 +129,6 @@ $table->timestamps();
 ```php
 $table->id();
 $table->string('name')->unique();  // 'up', 'down'
-$table->string('slug')->unique();
 $table->timestamps();
 ```
 
@@ -202,21 +199,21 @@ $table->timestamps();
 ### Role.php
 
 ```php
-protected $fillable = ['name', 'slug', 'description'];
+protected $fillable = ['name', 'description'];
 public function users(): HasMany
 ```
 
 ### PostStatus.php
 
 ```php
-protected $fillable = ['name', 'slug'];
+protected $fillable = ['name'];
 public function posts(): HasMany
 ```
 
 ### VoteType.php
 
 ```php
-protected $fillable = ['name', 'slug'];
+protected $fillable = ['name'];
 public function votes(): HasMany
 ```
 
