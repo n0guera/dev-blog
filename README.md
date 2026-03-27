@@ -521,6 +521,130 @@ php artisan storage:link
 | User    | All visitor + comment + vote        |
 | Admin   | All user + CRUD posts + manage tags |
 
+## Project Phases
+
+### Phase 1: Database & Models ✅ COMPLETE
+
+- [x] Create migrations: roles, post_statuses, vote_types, posts, tags, post_tag, comments, votes
+- [x] Update users table with role_id foreign key
+- [x] Create models: Role, PostStatus, VoteType, Post, Tag, Comment, Vote
+- [x] Add relationships to User model
+- [x] Create database seeders for roles and default data
+
+### Phase 2: Authentication & Authorization
+
+- [ ] Create CheckRole middleware
+- [ ] Create PostPolicy, CommentPolicy, TagPolicy, VotePolicy
+
+### Phase 3: Backend Controllers
+
+- [ ] Create PostController with CRUD + image upload
+- [ ] Create TagController with CRUD
+- [ ] Create CommentController
+- [ ] Create VoteController (upvote/downvote/remove)
+- [ ] Define routes in web.php and admin.php
+
+### Phase 4: Frontend Components
+
+- [ ] Create MarkdownEditor.vue with split view
+- [ ] Create TagInput.vue with autocomplete
+- [ ] Create TagPill.vue
+- [ ] Create PostCard.vue
+- [ ] Create PostList.vue
+- [ ] Create VoteButton.vue
+- [ ] Create CommentItem.vue, CommentForm.vue, CommentsSection.vue
+
+### Phase 5: Frontend Pages
+
+- [ ] Create posts/Index.vue (public listing)
+- [ ] Create posts/Show.vue (post detail)
+- [ ] Create posts/Search.vue
+- [ ] Update Welcome.vue
+- [ ] Create admin/Dashboard.vue
+- [ ] Create admin/posts/Index.vue, Create.vue, Edit.vue
+- [ ] Create admin/tags/Index.vue, Create.vue
+
+### Phase 6: Security & Polish
+
+- [ ] Apply rate limiting to comments and votes routes
+- [ ] Verify all Policies are enforced
+- [ ] Configure DOMPurify for Markdown sanitization
+- [ ] Run tests
+
+## Architectural Decisions
+
+- [x] Use marked for Markdown parsing
+- [x] Use DOMPurify for HTML sanitization
+- [x] Use spatie/laravel-sluggable for URL slugs
+- [x] Store images locally in storage/app/public/posts/
+- [x] One vote per user per post/comment
+- [x] Visitors can view but not interact
+- [x] Admin has full CRUD on posts and tags
+- [x] Owner can edit/delete own comments
+- [x] Admin can delete any comment
+- [x] English language (en-US)
+- [x] Split-view markdown editor
+- [x] Vote types stored in database table (vote_types) for scalability
+
+## What's Implemented
+
+- Database migrations for all entities
+- Eloquent models with relationships
+- Soft deletes on posts and comments
+- Optimized vote scoring with eager loading
+- Database seeders for roles, post statuses, vote types
+- Factories for all models
+- 74 passing tests
+
+## What's Missing
+
+- Backend controllers
+- Frontend Vue components and pages
+- Admin panel
+- Authentication middleware and policies
+- Comment system backend
+- Vote system backend
+- Markdown editor component
+
+## Performance Optimizations
+
+### Post::getVoteScoreAttribute()
+
+Uses Laravel's `withCount()` with conditional fallback to prevent N+1 queries:
+
+```php
+public function scopeWithVotes($query): \Illuminate\Database\Eloquent\Builder
+{
+    return $query->withCount(['upVotes', 'downVotes']);
+}
+
+public function getVoteScoreAttribute(): int
+{
+    if ($this->upVotes_count !== null && $this->downVotes_count !== null) {
+        return (int) $this->upVotes_count - (int) $this->downVotes_count;
+    }
+    return (int) $this->upVotes()->count() - (int) $this->downVotes()->count();
+}
+```
+
+Usage: `Post::withVotes()->get()`
+
+### Tag::getPostCountAttribute()
+
+Uses `relationLoaded()` to check if eager loaded, otherwise falls back to count:
+
+```php
+public function getPostCountAttribute(): int
+{
+    if ($this->relationLoaded('posts')) {
+        return $this->posts->count();
+    }
+    return $this->posts()->count();
+}
+```
+
+Usage: `Tag::withPostCount()->get()`
+
 ## License
 
 MIT

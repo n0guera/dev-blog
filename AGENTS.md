@@ -1,4 +1,30 @@
-# DevBlog Guidelines for agents
+# DevBlog Guidelines for Agents
+
+## Project Structure
+
+```
+app/
+├── Models/          # Role, PostStatus, VoteType, Post, Tag, Comment, Vote
+├── Http/
+│   ├── Controllers/
+│   ├── Requests/    # Form Request validation
+│   └── Middleware/  # CheckRole
+├── Policies/       # PostPolicy, CommentPolicy, TagPolicy, VotePolicy
+database/
+├── migrations/
+├── factories/
+└── seeders/
+resources/js/
+├── pages/
+│   ├── posts/
+│   └── admin/
+└── components/
+tests/
+├── Feature/
+└── Unit/
+```
+
+---
 
 === foundation rules ===
 
@@ -19,7 +45,7 @@
 
 ## Frontend Bundling
 
-- If the user doesn't see a frontend change reflected in the UI, it could mean they need to run `bun run build`, `bun run dev`, or `composer run dev`. Ask them.
+- If the user doesn't see a frontend change reflected in the UI, it could mean they need to run `npm run build`, `npm run dev`, or `composer run dev`. Ask them.
 
 ## Replies
 
@@ -125,13 +151,12 @@ protected function isAccessible(User $user, ?string $path = null): bool
 
 ### Vite Error
 
-- If you receive an "Illuminate\Foundation\ViteException: Unable to locate file in Vite manifest" error, you can run `bun run build` or ask the user to run `bun run dev` or `composer run dev`.
+- If you receive an "Illuminate\Foundation\ViteException: Unable to locate file in Vite manifest" error, you can run `npm run build` or ask the user to run `npm run dev` or `composer run dev`.
 
 === laravel/v13 rules ===
 
 ## Laravel 13
 
-- Use the `search-docs` tool to get version-specific documentation.
 - Since Laravel 11, Laravel has a new streamlined file structure which this project uses.
 
 ### Laravel 12 Structure
@@ -266,7 +291,6 @@ $pages->assertNoJavascriptErrors()->assertNoConsoleLogs();
 - Use Tailwind CSS classes to style HTML; check and use existing Tailwind conventions within the project before writing your own.
 - Offer to extract repeated patterns into components that match the project's conventions (i.e. Blade, JSX, Vue, etc.).
 - Think through class placement, order, priority, and defaults. Remove redundant classes, add classes to parent or child carefully to limit repetition, and group elements logically.
-- You can use the `search-docs` tool to get exact examples from the official documentation when needed.
 
 ### Spacing
 
@@ -325,138 +349,3 @@ $pages->assertNoJavascriptErrors()->assertNoConsoleLogs();
 | overflow-ellipsis | text-ellipsis |
 | decoration-slice | box-decoration-slice |
 | decoration-clone | box-decoration-clone |
-
-## Tasks
-
-### Phase 1: Database & Models
-
-- [x] Create migrations: roles, post_statuses, vote_types, posts, tags, post_tag, comments, votes
-- [x] Update users table with role_id foreign key
-- [x] Create models: Role, PostStatus, VoteType, Post, Tag, Comment, Vote
-- [x] Add relationships to User model
-- [x] Create database seeders for roles and default data
-
-### Phase 2: Authentication & Authorization
-
-- [ ] Create CheckRole middleware
-- [ ] Create PostPolicy, CommentPolicy, TagPolicy, VotePolicy
-
-### Phase 3: Backend Controllers
-
-- [ ] Create PostController with CRUD + image upload
-- [ ] Create TagController with CRUD
-- [ ] Create CommentController
-- [ ] Create VoteController (upvote/downvote/remove)
-- [ ] Define routes in web.php and admin.php
-
-### Phase 4: Frontend Components
-
-- [ ] Create MarkdownEditor.vue with split view
-- [ ] Create TagInput.vue with autocomplete
-- [ ] Create TagPill.vue
-- [ ] Create PostCard.vue
-- [ ] Create PostList.vue
-- [ ] Create VoteButton.vue
-- [ ] Create CommentItem.vue, CommentForm.vue, CommentsSection.vue
-
-### Phase 5: Frontend Pages
-
-- [ ] Create posts/Index.vue (public listing)
-- [ ] Create posts/Show.vue (post detail)
-- [ ] Create posts/Search.vue
-- [ ] Update Welcome.vue
-- [ ] Create admin/Dashboard.vue
-- [ ] Create admin/posts/Index.vue, Create.vue, Edit.vue
-- [ ] Create admin/tags/Index.vue, Create.vue
-
-### Phase 6: Security & Polish
-
-- [ ] Apply rate limiting to comments and votes routes
-- [ ] Verify all Policies are enforced
-- [ ] Configure DOMPurify for Markdown sanitization
-- [ ] Run tests
-
-## Decisions to Make
-
-- [ ] Use marked for Markdown parsing
-- [ ] Use DOMPurify for HTML sanitization
-- [ ] Use spatie/laravel-sluggable for URL slugs
-- [ ] Store images locally in storage/app/public/posts/
-- [ ] One vote per user per post/comment
-- [ ] Visitors can view but not interact
-- [ ] Admin has full CRUD on posts and tags
-- [ ] Owner can edit/delete own comments
-- [ ] Admin can delete any comment
-- [ ] English language (en-US)
-- [ ] Split-view markdown editor
-
-## Dependencies to Install
-
-### Composer
-
-- spatie/laravel-sluggable: ^4.0
-
-### NPM
-
-- marked: ^15.0
-- dompurify: ^3.2
-- @types/dompurify: ^3.0
-
-## What's Missing
-
-- Models and migrations
-- Admin panel pages
-- Markdown editor component
-- Comment system
-- Vote system
-- Tag management
-
-## Performance Notes
-
-### Optimized (Phase 1 Complete)
-
-#### Post::getVoteScoreAttribute() - OPTIMIZED
-
-Uses Laravel's `withCount()` with conditional fallback:
-
-```php
-public function upVotes(): MorphMany
-{
-    return $this->morphMany(Vote::class, 'votable')
-        ->whereHas('voteType', fn ($q) => $q->where('name', 'up'));
-}
-
-public function downVotes(): MorphMany
-{
-    return $this->morphMany(Vote::class, 'votable')
-        ->whereHas('voteType', fn ($q) => $q->where('name', 'down'));
-}
-
-public function getVoteScoreAttribute(): int
-{
-    if ($this->upVotes_count !== null && $this->downVotes_count !== null) {
-        return (int) $this->upVotes_count - (int) $this->downVotes_count;
-    }
-
-    return (int) $this->upVotes()->count() - (int) $this->downVotes()->count();
-}
-```
-
-Usage: `Post::withVotes()->get()` or `Post::withVotes()->find($id)`
-
-#### Tag::getPostCountAttribute() - OPTIMIZED
-
-Uses `relationLoaded()` to check if eager loaded, otherwise falls back to count:
-
-```php
-public function getPostCountAttribute(): int
-{
-    if ($this->relationLoaded('posts')) {
-        return $this->posts->count();
-    }
-
-    return $this->posts()->count();
-}
-```
-
-Usage: `Tag::withCount('posts')->get()` for eager loading.
