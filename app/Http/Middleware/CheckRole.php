@@ -10,10 +10,6 @@ final class CheckRole
 {
     public function handle(Request $request, Closure $next, string $role): Response
     {
-        if (! $request->user()) {
-            return redirect()->route('login');
-        }
-
         $userRole = $request->user()->role?->name;
 
         if ($userRole !== $role) {
