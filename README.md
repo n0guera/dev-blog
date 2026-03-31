@@ -531,10 +531,10 @@ php artisan storage:link
 - [x] Add relationships to User model
 - [x] Create database seeders for roles and default data
 
-### Phase 2: Authentication & Authorization
+### Phase 2: Authentication & Authorization ✅ COMPLETE
 
-- [ ] Create CheckRole middleware
-- [ ] Create PostPolicy, CommentPolicy, TagPolicy, VotePolicy
+- [x] Create CheckRole middleware
+- [x] Create PostPolicy, CommentPolicy, TagPolicy, VotePolicy
 
 ### Phase 3: Backend Controllers
 
