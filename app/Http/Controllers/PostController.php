@@ -38,10 +38,8 @@ class PostController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id): array
+    public function edit(Post $post): array
     {
-        $post = Post::findOrFail($id);
-
         return [
             'post' => $post->load('tags'),
             'statuses' => PostStatus::all(),
@@ -51,9 +49,8 @@ class PostController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(PostRequest $request, string $id): RedirectResponse
+    public function update(PostRequest $request, Post $post): RedirectResponse
     {
-        $post = Post::findOrFail($id);
         $post->fill($request->validated());
         $post->save();
 
@@ -69,9 +66,8 @@ class PostController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id): RedirectResponse
+    public function destroy(Post $post): RedirectResponse
     {
-        $post = Post::findOrFail($id);
         $post->delete();
 
         return redirect()->route('posts.index')->with('success', 'Post deleted successfully.');
