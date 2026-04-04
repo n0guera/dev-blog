@@ -6,6 +6,7 @@ use App\Http\Requests\PostRequest;
 use App\Models\Post;
 use App\Models\PostStatus;
 use Illuminate\Http\RedirectResponse;
+use Inertia\Inertia;
 
 class PostController extends Controller
 {
@@ -14,10 +15,17 @@ class PostController extends Controller
      */
     public function index(): array
     {
-        // TODO: Implementar paginación
-        // TODO: Aplicar policy: Gate::allows('viewAny', Post::class) o $this->authorize('viewAny', Post::class)
-        // TODO: Return Inertia render: return Inertia::render('posts/Index', [...]);
-        return [];
+        $this->authorize('viewAny', Post::class);
+
+        $posts = Post::whereHas('status', fn ($q) => $q->where('name', 'published'))
+            ->with(['user', 'status', 'tags'])
+            ->withVotes()
+            ->latest()
+            ->paginate(12);
+
+        return Inertia::render('posts/Index', [
+            'posts' => $posts,
+        ]);
     }
 
     /**
@@ -25,11 +33,15 @@ class PostController extends Controller
      */
     public function show(string $slug): array
     {
-        // TODO: Buscar por slug, no por id
-        // TODO: Policy: view
-        // TODO: Cargar relaciones: user, tags, comments con sus votos, status
-        // TODO: Return Inertia render: return Inertia::render('posts/Show', [...]);
-        return [];
+        $post = Post::where('slug', $slug)->firstOrFail();
+
+        $this->authorize('view', $post);
+
+        $post->load(['user', 'tags', 'comments.user', 'comments.votes', 'status']);
+
+        return Inertia::render('posts/Show', [
+            'post' => $post,
+        ]);
     }
 
     /**
@@ -37,11 +49,11 @@ class PostController extends Controller
      */
     public function create(): array
     {
-        // TODO: Policy: create
-        // TODO: Return Inertia render: return Inertia::render('admin/posts/Create', [...]);
-        return [
+        $this->authorize('create', Post::class);
+
+        return Inertia::render('admin/posts/Create', [
             'statuses' => PostStatus::all(),
-        ];
+        ]);
     }
 
     /**
@@ -116,10 +128,18 @@ class PostController extends Controller
      */
     public function tagged(string $slug): array
     {
-        // TODO: Buscar tag por slug, obtener posts publicados con ese tag
-        // TODO: Policy: viewAny
-        // TODO: Return Inertia render: return Inertia::render('posts/Index', [...]);
-        return [];
+        $this->authorize('viewAny', Post::class);
+
+        $posts = Post::whereHas('status', fn ($q) => $q->where('name', 'published'))
+            ->whereHas('tags', fn ($q) => $q->where('slug', $slug))
+            ->with(['user', 'status', 'tags'])
+            ->withVotes()
+            ->latest()
+            ->paginate(12);
+
+        return Inertia::render('posts/Index', [
+            'posts' => $posts,
+        ]);
     }
 
     /**
@@ -127,21 +147,49 @@ class PostController extends Controller
      */
     public function search(): array
     {
-        // TODO: Obtener query param 'q', buscar en title y content
-        // TODO: Policy: viewAny
-        // TODO: Return Inertia render: return Inertia::render('posts/Search', [...]);
-        return [];
+        $this->authorize('viewAny', Post::class);
+
+        $query = $this->request->query('q', '');
+
+        $posts = Post::whereHas('status', fn ($q) => $q->where('name', 'published'))
+            ->where(function ($q) use ($query) {
+                $q->where('title', 'like', "%{$query}%")
+                    ->orWhere('content', 'like', "%{$query}%");
+            })
+            ->with(['user', 'status', 'tags'])
+            ->withVotes()
+            ->latest()
+            ->paginate(12);
+
+        return Inertia::render('posts/Search', [
+            'posts' => $posts,
+            'query' => $query,
+        ]);
     }
 
     /**
      * Upload featured image for a post.
      */
-    public function uploadImage(PostRequest $request): array
+    public function uploadImage(Request $request): array
     {
-        // TODO: Policy
-        // TODO: Validar archivo: imagen, max 2MB, dimensiones 200-1200px
-        // TODO: Guardar en storage/app/public/posts/
-        // TODO: Retornar la ruta de la imagen
-        return [];
+        $this->authorize('create', Post::class);
+
+        $validated = $request->validate([
+            'image' => ['required', 'image', 'mimes:jpeg,png,jpg,gif,webp', 'max:2048'],
+        ]);
+
+        $image = $request->file('image');
+
+        $width = (int) $image->getClientWidth();
+
+        if ($width < 200 || $width > 1200) {
+            return ['error' => 'Image width must be between 200 and 1200 pixels.'];
+        }
+
+        $filename = uniqid('post_').'.'.$image->getClientOriginalExtension();
+
+        $image->storeAs('posts', $filename, 'public');
+
+        return ['url' => "/storage/posts/{$filename}"];
     }
 }
