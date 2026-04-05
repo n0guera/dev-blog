@@ -2,14 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Routing\Controller as BaseController;
 
-abstract class Controller
+abstract class Controller extends BaseController
 {
-    protected ?Request $request = null;
-
-    public function __construct(Request $request)
-    {
-        $this->request = $request;
-    }
+    use AuthorizesRequests;
 }

@@ -84,4 +84,9 @@ class Post extends Model
 
         return (int) $this->upVotes()->count() - (int) $this->downVotes()->count();
     }
+
+    public function getRouteKeyName(): string
+    {
+        return 'slug';
+    }
 }

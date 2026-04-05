@@ -6,14 +6,16 @@ use App\Http\Requests\PostRequest;
 use App\Models\Post;
 use App\Models\PostStatus;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Inertia\Response;
 
 class PostController extends Controller
 {
     /**
      * Display a listing of the published posts.
      */
-    public function index(): array
+    public function index(): Response
     {
         $this->authorize('viewAny', Post::class);
 
@@ -31,10 +33,8 @@ class PostController extends Controller
     /**
      * Display the specified post.
      */
-    public function show(string $slug): array
+    public function show(Post $post): Response
     {
-        $post = Post::where('slug', $slug)->firstOrFail();
-
         $this->authorize('view', $post);
 
         $post->load(['user', 'tags', 'comments.user', 'comments.votes', 'status']);
@@ -47,7 +47,7 @@ class PostController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create(): array
+    public function create(): Response
     {
         $this->authorize('create', Post::class);
 
@@ -77,14 +77,14 @@ class PostController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Post $post): array
+    public function edit(Post $post): Response
     {
         $this->authorize('update', $post);
 
-        return [
+        return Inertia::render('admin/posts/Edit', [
             'post' => $post->load('tags'),
             'statuses' => PostStatus::all(),
-        ];
+        ]);
     }
 
     /**
@@ -126,7 +126,7 @@ class PostController extends Controller
     /**
      * Display posts filtered by tag.
      */
-    public function tagged(string $slug): array
+    public function tagged(string $slug): Response
     {
         $this->authorize('viewAny', Post::class);
 
@@ -145,11 +145,11 @@ class PostController extends Controller
     /**
      * Search posts by query.
      */
-    public function search(): array
+    public function search(Request $request): Response
     {
         $this->authorize('viewAny', Post::class);
 
-        $query = $this->request->query('q', '');
+        $query = $request->query('q', '');
 
         $posts = Post::whereHas('status', fn ($q) => $q->where('name', 'published'))
             ->where(function ($q) use ($query) {
