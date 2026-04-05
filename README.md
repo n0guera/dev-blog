@@ -280,7 +280,7 @@ public function voteType(): BelongsTo
 ### PostController.php
 
 - `index()` - Public: list published posts
-- `show($slug)` - Public: show post
+- `show(Post $post)` - Public: show post (route model binding by slug)
 - `store()` - Admin: create post
 - `update(Post $post)` - Admin: update post
 - `destroy(Post $post)` - Admin: delete post
