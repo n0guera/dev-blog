@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 
-#[Fillable(['title', 'slug', 'content', 'excerpt', 'featured_image', 'status_id', 'published_at', 'user_id'])]
+#[Fillable(['title', 'slug', 'content', 'excerpt', 'featured_image', 'status_id', 'published_at'])]
 class Post extends Model
 {
     use HasFactory, HasSlug, SoftDeletes;
@@ -62,13 +62,13 @@ class Post extends Model
     public function upVotes(): MorphMany
     {
         return $this->morphMany(Vote::class, 'votable')
-            ->whereHas('voteType', fn ($q) => $q->where('name', 'up'));
+            ->whereHas('voteType', fn($q) => $q->where('name', 'up'));
     }
 
     public function downVotes(): MorphMany
     {
         return $this->morphMany(Vote::class, 'votable')
-            ->whereHas('voteType', fn ($q) => $q->where('name', 'down'));
+            ->whereHas('voteType', fn($q) => $q->where('name', 'down'));
     }
 
     public function scopeWithVotes($query): Builder
