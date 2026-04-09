@@ -14,7 +14,7 @@ describe('PostController - Public Routes', function () {
         $publishedStatus = PostStatus::factory()->published()->create();
         $draftStatus = PostStatus::factory()->draft()->create();
 
-        $publishedPost = Post::factory()->create(['status_id' => $publishedStatus->id]);
+        Post::factory()->create(['status_id' => $publishedStatus->id]);
         Post::factory()->create(['status_id' => $draftStatus->id]);
 
         $response = $this->actingAs($user)->get(route('posts.index'));
@@ -28,11 +28,20 @@ describe('PostController - Public Routes', function () {
     test('index includes user, status, tags and vote score', function () {
         $user = User::factory()->create();
         $status = PostStatus::factory()->published()->create();
-        $post = Post::factory()->create(['status_id' => $status->id]);
+        $tag = Tag::factory()->create();
+        $post = Post::factory()->create(['user_id' => $user->id, 'status_id' => $status->id]);
+        $post->tags()->attach($tag);
 
         $response = $this->actingAs($user)->get(route('posts.index'));
 
         $response->assertStatus(200);
+        $response->assertInertia(fn ($page) => $page
+            ->has('posts.data', 1)
+            ->where('posts.data.0.user.id', $user->id)
+            ->where('posts.data.0.status.name', 'published')
+            ->where('posts.data.0.tags', [['id' => $tag->id, 'name' => $tag->name, 'slug' => $tag->slug]])
+            ->where('posts.data.0.vote_score', 0)
+        );
     });
 
     test('show returns published post', function () {
@@ -88,7 +97,7 @@ describe('PostController - Public Routes', function () {
     test('search returns matching posts', function () {
         $user = User::factory()->create();
         $status = PostStatus::factory()->published()->create();
-        $post = Post::factory()->create([
+        Post::factory()->create([
             'status_id' => $status->id,
             'title' => 'Laravel Tutorial',
         ]);
@@ -98,6 +107,8 @@ describe('PostController - Public Routes', function () {
         $response->assertStatus(200);
         $response->assertInertia(fn ($page) => $page
             ->where('query', 'Laravel')
+            ->has('posts.data', 1)
+            ->where('posts.data.0.title', 'Laravel Tutorial')
         );
     });
 
