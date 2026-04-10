@@ -536,13 +536,13 @@ php artisan storage:link
 - [x] Create CheckRole middleware
 - [x] Create PostPolicy, CommentPolicy, TagPolicy, VotePolicy
 
-### Phase 3: Backend Controllers
+### Phase 3: Backend Controllers ✅ COMPLETE
 
-- [ ] Create PostController with CRUD + image upload
-- [ ] Create TagController with CRUD
-- [ ] Create CommentController
-- [ ] Create VoteController (upvote/downvote/remove)
-- [ ] Define routes in web.php and admin.php
+- [x] Create PostController with CRUD + image upload
+- [x] Create TagController with CRUD
+- [x] Create CommentController
+- [x] Create VoteController (upvote/downvote/remove)
+- [x] Define routes in web.php and admin.php
 
 ### Phase 4: Frontend Components
 
@@ -600,17 +600,17 @@ php artisan storage:link
 - Factories for all models
 - PostController (public): index, show, tagged, search
 - Admin\PostController: CRUD operations with image upload
+- TagController (public): index
+- Admin\TagController: CRUD operations
+- CommentController: index, store, update, destroy
+- VoteController: upvote, downvote, removeVote
 - PostResource: API resource for post data transformation
-- PostRequest: form validation (authorization in Policy)
+- PostRequest, TagRequest, CommentRequest: form validation
 
 ## What's Missing
 
-- TagController, CommentController, VoteController
 - Frontend Vue components and pages
 - Admin panel frontend
-- Comment system backend
-- Vote system backend
-- Markdown editor component
 
 ## Performance Optimizations
 
