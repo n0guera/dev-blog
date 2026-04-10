@@ -10,11 +10,12 @@ Route::inertia('/', 'Welcome', [
 
 Route::get('/posts', [PostController::class, 'index'])->name('posts.index');
 Route::get('/posts/{post}', [PostController::class, 'show'])->name('posts.show');
-Route::get('/tags/{slug}', [PostController::class, 'tagged'])->name('posts.byTag');
+Route::get('/tags/{tag:slug}', [PostController::class, 'tagged'])->name('posts.byTag');
 Route::get('/search', [PostController::class, 'search'])->name('posts.search');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::inertia('dashboard', 'Dashboard')->name('dashboard');
 });
 
+require __DIR__.'/admin.php';
 require __DIR__.'/settings.php';
