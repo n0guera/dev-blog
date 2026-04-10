@@ -40,4 +40,9 @@ class Tag extends Model
     {
         return $query->withCount('posts');
     }
+
+    public function getRouteKeyName(): string
+    {
+        return 'slug';
+    }
 }
