@@ -7,12 +7,12 @@ use App\Models\User;
 
 final class PostPolicy
 {
-    public function viewAny(User $user): bool
+    public function viewAny(): bool
     {
         return true;
     }
 
-    public function view(User $user, Post $post): bool
+    public function view(): bool
     {
         return true;
     }
@@ -27,7 +27,7 @@ final class PostPolicy
         return $user->isAdmin() && $post->user_id === $user->id;
     }
 
-    public function delete(User $user, Post $post): bool
+    public function delete(User $user): bool
     {
         return $user->isAdmin();
     }
