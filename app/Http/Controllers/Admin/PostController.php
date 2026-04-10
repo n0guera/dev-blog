@@ -47,7 +47,7 @@ class PostController extends Controller
             $post->tags()->attach($request->input('tags'));
         }
 
-        return redirect()->route('posts.show', $post)
+        return redirect()->route('posts.index')
             ->with('success', 'Post created successfully.');
     }
 
@@ -74,7 +74,7 @@ class PostController extends Controller
             $post->tags()->detach();
         }
 
-        return redirect()->route('posts.show', $post)
+        return redirect()->route('posts.index')
             ->with('success', 'Post updated successfully.');
     }
 
