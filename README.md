@@ -585,6 +585,10 @@ php artisan storage:link
 - [x] English language (en-US)
 - [x] Split-view markdown editor
 - [x] Vote types stored in database table (vote_types) for scalability
+- [x] Separation of concerns: PostController (public) vs Admin\PostController (admin)
+- [x] PostResource for consistent API response formatting
+- [x] Authorization handled in Policies, not in FormRequests
+- [x] Route Model Binding for tags using slug
 
 ## What's Implemented
 
@@ -594,14 +598,16 @@ php artisan storage:link
 - Optimized vote scoring with eager loading
 - Database seeders for roles, post statuses, vote types
 - Factories for all models
-- 74 passing tests
+- PostController (public): index, show, tagged, search
+- Admin\PostController: CRUD operations with image upload
+- PostResource: API resource for post data transformation
+- PostRequest: form validation (authorization in Policy)
 
 ## What's Missing
 
-- Backend controllers
+- TagController, CommentController, VoteController
 - Frontend Vue components and pages
-- Admin panel
-- Authentication middleware and policies
+- Admin panel frontend
 - Comment system backend
 - Vote system backend
 - Markdown editor component
