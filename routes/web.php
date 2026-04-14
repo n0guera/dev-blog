@@ -17,6 +17,8 @@ Route::get('/tags', [TagController::class, 'index'])->name('tags.index');
 Route::get('/tags/{tag:slug}', [PostController::class, 'tagged'])->name('posts.byTag');
 Route::get('/search', [PostController::class, 'search'])->name('posts.search');
 
+Route::get('/posts/{post}/comments', [CommentController::class, 'index'])->name('comments.index');
+
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::inertia('dashboard', 'Dashboard')->name('dashboard');
 
