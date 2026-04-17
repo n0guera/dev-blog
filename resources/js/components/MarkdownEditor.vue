@@ -1,18 +1,24 @@
 <script setup lang="ts">
+import { ref, computed } from 'vue';
+import { marked } from 'marked';
+import DOMPurify from 'dompurify';
 
-const markdown = {
-    content: ''
-};
+const markdown = ref('');
 
-const compiledMarkdown = {
-    content: '',
-};
+const compiledMarkdown = computed(() => {
+    const rawHtml = marked.parse(markdown.value || '');
 
+    return DOMPurify.sanitize(rawHtml as string);
+});
 </script>
 
 <template>
     <div id="editor">
-        <textarea v-model="markdown.content" name="markdown-input" id="markdown-input"></textarea>
-        <div v-html="compiledMarkdown.content"></div>
+        <textarea
+            v-model="markdown"
+            name="markdown-input"
+            id="markdown-input"
+        ></textarea>
+        <div v-html="compiledMarkdown"></div>
     </div>
 </template>
