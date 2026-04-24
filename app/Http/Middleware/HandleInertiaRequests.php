@@ -2,7 +2,9 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Tag;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Inertia\Middleware;
 
 class HandleInertiaRequests extends Middleware
@@ -41,7 +43,19 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => $request->user(),
             ],
-            'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
+            'tags' => Cache::remember(
+                'nav_tags',
+                3600,
+                fn () => Tag::withCount('posts')
+                    ->orderByDesc('posts_count')
+                    ->limit(15)
+                    ->get(['name', 'slug'])
+                    ->map(fn ($tag) => [
+                        'name' => $tag->name,
+                        'slug' => $tag->slug,
+                        'url' => '/tags/'.$tag->slug,
+                    ])
+            ),
         ];
     }
 }
