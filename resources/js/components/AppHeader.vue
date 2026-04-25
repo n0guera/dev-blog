@@ -3,5 +3,7 @@ import NavMain from '@/components/NavMain.vue';
 </script>
 
 <template>
-    <NavMain></NavMain>
+    <header class="mt-2">
+        <NavMain></NavMain>
+    </header>
 </template>

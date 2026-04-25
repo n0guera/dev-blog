@@ -5,7 +5,7 @@ import AppHeader from '@/components/AppHeader.vue';
 </script>
 
 <template>
-    <div class="container flex min-h-screen flex-col justify-center">
+    <div class="flex flex-col items-center container mx-auto">
         <AppHeader></AppHeader>
         <AppContent></AppContent>
         <AppFooter></AppFooter>
