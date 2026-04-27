@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { Link } from '@inertiajs/vue3';
+import { usePage } from '@inertiajs/vue3';
 import { Home, FileText, Info } from 'lucide-vue-next';
 import PostController from '@/actions/App/Http/Controllers/PostController';
 import {
@@ -8,7 +10,12 @@ import {
     NavigationMenuList,
 } from '@/components/ui/navigation-menu';
 import { cn } from '@/lib/utils';
+import { dashboard, login, register, logout } from '@/routes';
 import { home } from '@/routes';
+
+const page = usePage();
+
+const canRegister = page.props.canRegister;
 
 const navItems = [
     {
@@ -46,6 +53,20 @@ const navItems = [
                     </a>
                 </NavigationMenuLink>
             </NavigationMenuItem>
+            <Link v-if="$page.props.auth.user" :href="logout()"
+                class="inline-block rounded-sm border border-[#19140035] px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#1915014a] dark:border-[#3E3E3A] dark:text-[#EDEDEC] dark:hover:border-[#62605b]">
+                Log out
+            </Link>
+            <template v-else>
+                <Link :href="login()"
+                    class="inline-block rounded-sm border border-transparent px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#19140035] dark:text-[#EDEDEC] dark:hover:border-[#3E3E3A]">
+                    Log in
+                </Link>
+                <Link v-if="canRegister" :href="register()"
+                    class="inline-block rounded-sm border border-[#19140035] px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#1915014a] dark:border-[#3E3E3A] dark:text-[#EDEDEC] dark:hover:border-[#62605b]">
+                    Register
+                </Link>
+            </template>
         </NavigationMenuList>
     </NavigationMenu>
 </template>
