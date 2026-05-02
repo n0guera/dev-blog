@@ -24,7 +24,7 @@ const compiledMarkdown = computed(() => {
             <div class="max-h-150 min-h-100 flex-1 overflow-hidden">
                 <textarea v-model="markdown" name="markdown-input" id="markdown-input"
                     class="h-full min-h-100 w-full resize-none border-0 bg-transparent p-4 text-sm leading-relaxed text-foreground placeholder:text-muted-foreground focus:ring-0 focus:outline-none"
-                    placeholder="Escribe tu contenido en Markdown..." spellcheck="false"></textarea>
+                    placeholder="Write your content in Markdown..." spellcheck="false"></textarea>
             </div>
         </div>
 

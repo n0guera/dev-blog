@@ -3,7 +3,7 @@ import NavMain from '@/components/NavMain.vue';
 </script>
 
 <template>
-    <header class="mt-2">
-        <NavMain></NavMain>
+    <header class="w-full">
+        <NavMain class="container mx-auto my-2 px-4" />
     </header>
 </template>

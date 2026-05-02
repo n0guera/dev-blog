@@ -14,7 +14,7 @@ const className = computed(() => props.class);
 </script>
 
 <template>
-    <main class="mx-auto flex flex-col h-full" :class="className">
+    <main class="container mx-auto flex flex-col" :class="className">
         <slot />
     </main>
 </template>
