@@ -6,8 +6,10 @@ import AppHeader from '@/components/AppHeader.vue';
 
 <template>
     <div class="flex flex-col items-center container mx-auto">
-        <AppHeader></AppHeader>
-        <AppContent></AppContent>
-        <AppFooter></AppFooter>
+        <AppHeader />
+        <AppContent>
+            <slot />
+        </AppContent>
+        <AppFooter />
     </div>
 </template>
