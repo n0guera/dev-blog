@@ -50,10 +50,10 @@ const navItems = [
                     'focus:text-accent-foreground focus:outline-none focus:before:scale-x-100',
                 )
                     ">
-                    <a :href="item.href" class="flex items-center gap-2.5">
+                    <Link :href="item.href" class="flex items-center gap-2.5">
                         <component :is="item.icon" class="h-5 w-5 shrink-0" />
                         {{ item.title }}
-                    </a>
+                    </Link>
                 </NavigationMenuLink>
             </NavigationMenuItem>
             <UserMenu v-if="user" />
