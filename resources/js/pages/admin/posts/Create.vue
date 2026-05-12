@@ -9,11 +9,11 @@ defineProps<{ statuses: any }>();
 const form = useForm({
     title: '',
     content: '',
-    status: ''
+    status_id: '',
 });
 
 const submit = () => {
-    form.post(PostController.store().url);
+    form.submit(PostController.store());
 }
 </script>
 

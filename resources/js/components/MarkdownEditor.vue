@@ -1,15 +1,27 @@
 <script setup lang="ts">
 import DOMPurify from 'dompurify';
 import { marked } from 'marked';
-import { ref, computed } from 'vue';
+import { computed } from 'vue'
 
-const markdown = ref('');
+const props = defineProps<{
+    modelValue: string,
+}>();
+
+const emit = defineEmits<{
+    (e: 'update:modelValue', value: string): void
+}>();
 
 const compiledMarkdown = computed(() => {
-    const rawHtml = marked.parse(markdown.value || '');
+    const rawHtml = marked.parse(props.modelValue || '');
 
     return DOMPurify.sanitize(rawHtml as string);
 });
+
+const updateMarkdown = (event: Event) => {
+    const target = event.target as HTMLTextAreaElement;
+
+    emit('update:modelValue', target.value);
+}
 </script>
 
 <template>
@@ -22,7 +34,7 @@ const compiledMarkdown = computed(() => {
                 <span class="text-xs text-muted-foreground">Markdown</span>
             </div>
             <div class="max-h-150 min-h-100 flex-1 overflow-hidden">
-                <textarea v-model="markdown" name="markdown-input" id="markdown-input"
+                <textarea :value="modelValue" @input="updateMarkdown" name="markdown-input" id="markdown-input"
                     class="h-full min-h-100 w-full resize-none border-0 bg-transparent p-4 text-sm leading-relaxed text-foreground placeholder:text-muted-foreground focus:ring-0 focus:outline-none"
                     placeholder="Write your content in Markdown..." spellcheck="false"></textarea>
             </div>
@@ -36,7 +48,7 @@ const compiledMarkdown = computed(() => {
                 <span class="text-xs text-muted-foreground">Real-time rendering</span>
             </div>
             <div class="max-h-150 min-h-100 flex-1 overflow-hidden">
-                <div v-if="!markdown"
+                <div v-if="!modelValue"
                     class="flex h-full min-h-100 flex-col items-center justify-center gap-3 text-muted-foreground">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"

@@ -24,7 +24,7 @@ defineProps<{
             Status
         </label>
 
-        <select v-model="form.status_id">
+        <select v-model.number="form.status_id">
             <option v-for="status in statuses" :key="status.id" :value="status.id">
                 {{ status.name }}</option>
         </select>
