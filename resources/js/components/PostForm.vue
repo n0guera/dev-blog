@@ -17,6 +17,14 @@ defineProps<{
         <input v-model="form.title" type="text" placeholder="Title">
         <p v-if="form.errors.title">{{ form.errors.title }}</p>
     </div>
+    <div>
+        <label>
+            Excerpt
+        </label>
+
+        <input v-model="form.excerpt" type="text" placeholder="Excerpt">
+        <p v-if="form.errors.excerpt">{{ form.errors.excerpt }}</p>
+    </div>
 
     <!-- Status -->
     <div>

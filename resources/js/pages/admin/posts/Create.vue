@@ -8,6 +8,7 @@ defineProps<{ statuses: any }>();
 
 const form = useForm({
     title: '',
+    excerpt: '',
     content: '',
     status_id: '',
 });
