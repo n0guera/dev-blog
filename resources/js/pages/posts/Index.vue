@@ -11,7 +11,7 @@ defineProps<{ posts: any }>();
     <Head title="Posts" />
     <AppLayout>
         <Link v-for="post in posts.data" :key="post.id" :href="PostController.show(post.slug)">
-            {{ post.title }}
+            <p class="text-xl">{{ post.title }}</p>
             <p>{{ post.excerpt }}</p>
         </Link>
     </AppLayout>

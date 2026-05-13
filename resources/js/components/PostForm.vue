@@ -1,4 +1,5 @@
 <script setup lang="ts">
+/* eslint-disable vue/no-mutating-props */
 import MarkdownEditor from './MarkdownEditor.vue';
 
 defineProps<{
