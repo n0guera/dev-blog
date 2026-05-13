@@ -21,6 +21,7 @@ return new class extends Migration
             $table->text('excerpt')->nullable();
             $table->string('featured_image')->nullable();
             $table->timestamp('published_at')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

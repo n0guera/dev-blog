@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests;
 
-use App\Models\Post;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -10,29 +9,18 @@ class PostRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        $post = $this->route('post');
-
-        if ($this->isMethod('post')) {
-            return $this->user() && $this->user()->isAdmin();
-        }
-
-        if ($this->isMethod('put') || $this->isMethod('patch')) {
-            return $post && $this->user() && $this->user()->isAdmin() && $post->user_id === $this->user()->id;
-        }
-
-        return false;
+        return true;
     }
 
     public function rules(): array
     {
-        $post = $this->route('post');
-
         return [
             'title' => ['required', 'string', 'max:255'],
             'content' => ['required', 'string'],
             'excerpt' => ['nullable', 'string', 'max:500'],
-            'featured_image' => ['nullable', 'string', 'max:255'],
+            'featured_image' => ['nullable', 'string'],
             'status_id' => ['required', 'integer', Rule::exists('post_statuses', 'id')],
+            'published_at' => ['nullable', 'date'],
             'tags' => ['nullable', 'array'],
             'tags.*' => ['integer', Rule::exists('tags', 'id')],
         ];

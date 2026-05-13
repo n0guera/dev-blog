@@ -1,0 +1,55 @@
+<script setup lang="ts">
+/* eslint-disable vue/no-mutating-props */
+import MarkdownEditor from './MarkdownEditor.vue';
+
+defineProps<{
+    form: any,
+    statuses: Array<any>,
+}>()
+</script>
+
+<template>
+    <!-- Title -->
+    <div>
+        <label>
+            Title
+        </label>
+
+        <input v-model="form.title" type="text" placeholder="Title">
+        <p v-if="form.errors.title">{{ form.errors.title }}</p>
+    </div>
+    <div>
+        <label>
+            Excerpt
+        </label>
+
+        <input v-model="form.excerpt" type="text" placeholder="Excerpt">
+        <p v-if="form.errors.excerpt">{{ form.errors.excerpt }}</p>
+    </div>
+
+    <!-- Status -->
+    <div>
+        <label>
+            Status
+        </label>
+
+        <select v-model.number="form.status_id">
+            <option v-for="status in statuses" :key="status.id" :value="status.id">
+                {{ status.name }}</option>
+        </select>
+
+        <p v-if="form.errors.status_id">
+            {{ form.errors.status_id }}
+        </p>
+    </div>
+
+    <!-- Content -->
+    <div>
+        <label>
+            Content
+        </label>
+
+        <MarkdownEditor v-model="form.content" />
+        <p v-if="form.errors.content"> {{ form.errors.content }}</p>
+    </div>
+</template>

@@ -536,13 +536,13 @@ php artisan storage:link
 - [x] Create CheckRole middleware
 - [x] Create PostPolicy, CommentPolicy, TagPolicy, VotePolicy
 
-### Phase 3: Backend Controllers
+### Phase 3: Backend Controllers ✅ COMPLETE
 
-- [ ] Create PostController with CRUD + image upload
-- [ ] Create TagController with CRUD
-- [ ] Create CommentController
-- [ ] Create VoteController (upvote/downvote/remove)
-- [ ] Define routes in web.php and admin.php
+- [x] Create PostController with CRUD + image upload
+- [x] Create TagController with CRUD
+- [x] Create CommentController
+- [x] Create VoteController (upvote/downvote/remove)
+- [x] Define routes in web.php and admin.php
 
 ### Phase 4: Frontend Components
 
@@ -585,6 +585,10 @@ php artisan storage:link
 - [x] English language (en-US)
 - [x] Split-view markdown editor
 - [x] Vote types stored in database table (vote_types) for scalability
+- [x] Separation of concerns: PostController (public) vs Admin\PostController (admin)
+- [x] PostResource for consistent API response formatting
+- [x] Authorization handled in Policies, not in FormRequests
+- [x] Route Model Binding for tags using slug
 
 ## What's Implemented
 
@@ -594,17 +598,19 @@ php artisan storage:link
 - Optimized vote scoring with eager loading
 - Database seeders for roles, post statuses, vote types
 - Factories for all models
-- 74 passing tests
+- PostController (public): index, show, tagged, search
+- Admin\PostController: CRUD operations with image upload
+- TagController (public): index
+- Admin\TagController: CRUD operations
+- CommentController: index, store, update, destroy
+- VoteController: upvote, downvote, removeVote
+- PostResource: API resource for post data transformation
+- PostRequest, TagRequest, CommentRequest: form validation
 
 ## What's Missing
 
-- Backend controllers
 - Frontend Vue components and pages
-- Admin panel
-- Authentication middleware and policies
-- Comment system backend
-- Vote system backend
-- Markdown editor component
+- Admin panel frontend
 
 ## Performance Optimizations
 

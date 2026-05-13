@@ -1,8 +1,10 @@
 <?php
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Inertia\Testing\AssertableInertia as Assert;
 use Laravel\Fortify\Features;
 
-uses(\Illuminate\Foundation\Testing\RefreshDatabase::class);
+uses(RefreshDatabase::class);
 
 beforeEach(function () {
     $this->skipUnlessFortifyFeature(Features::registration());
@@ -12,6 +14,7 @@ test('registration screen can be rendered', function () {
     $response = $this->get(route('register'));
 
     $response->assertOk();
+    $response->assertInertia(fn (Assert $page) => $page->component('auth/Register'));
 });
 
 test('new users can register', function () {

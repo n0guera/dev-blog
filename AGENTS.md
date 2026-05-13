@@ -33,6 +33,10 @@ tests/
 - You must follow all existing code conventions used in this application. When creating or editing a file, check sibling files for the correct structure, approach, and naming.
 - Use descriptive names for variables and methods. For example, `isRegisteredForDiscounts`, not `discount()`.
 - Check for existing components to reuse before writing a new one.
+- Never modify more than one file per instruction if not necessary.
+- Follow PSR-12 and Vue 3 Composition API conventions with `<script setup>`
+- Always use full type hints (parameters and returns)
+- Never use $request->all() for mass assignment
 
 ## Verification Scripts
 

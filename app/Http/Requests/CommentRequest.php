@@ -13,6 +13,18 @@ class CommentRequest extends FormRequest
 
     public function rules(): array
     {
-        return [];
+        return [
+            'content' => ['required', 'string', 'max:2000'],
+            'parent_id' => ['nullable', 'integer', 'exists:comments,id'],
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'content.required' => 'The comment content is required.',
+            'content.max' => 'The comment may not be greater than 2000 characters.',
+            'parent_id.exists' => 'The parent comment is invalid.',
+        ];
     }
 }
