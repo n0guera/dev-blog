@@ -546,7 +546,7 @@ php artisan storage:link
 
 ### Phase 4: Frontend Components
 
-- [ ] Create MarkdownEditor.vue with split view
+- [x] Create MarkdownEditor.vue with split view
 - [ ] Create TagInput.vue with autocomplete
 - [ ] Create TagPill.vue
 - [ ] Create PostCard.vue
@@ -556,11 +556,11 @@ php artisan storage:link
 
 ### Phase 5: Frontend Pages
 
-- [ ] Create posts/Index.vue (public listing)
-- [ ] Create posts/Show.vue (post detail)
+- [x] Create posts/Index.vue (public listing)
+- [x] Create posts/Show.vue (post detail)
 - [ ] Create posts/Search.vue
 - [ ] Update Welcome.vue
-- [ ] Create admin/Dashboard.vue
+- [x] Create admin/Dashboard.vue
 - [ ] Create admin/posts/Index.vue, Create.vue, Edit.vue
 - [ ] Create admin/tags/Index.vue, Create.vue
 
@@ -653,4 +653,4 @@ Usage: `Tag::withPostCount()->get()`
 
 ## License
 
-MIT
+All rights reserved.
