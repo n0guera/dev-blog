@@ -15,5 +15,5 @@ const compiledMarkdown = computed(() => {
 </script>
 
 <template>
-    <div v-html="compiledMarkdown" class=""></div>
+    <div v-html="compiledMarkdown" class="prose prose-neutral dark:prose-invert"></div>
 </template>

@@ -8,11 +8,13 @@ defineProps<{ post: any }>();
 
 <template>
 
-    <Head :title="post.title" />
+    <Head :title="post.data.title" />
     <AppLayout>
-        <h1 class="mb-6 text-3xl font-bold">
-            {{ post.data.title }}
-        </h1>
-        <MarkdownRenderer :content="post.data.content" />
+        <div class="prose prose-neutral dark:prose-invert">
+            <h1>
+                {{ post.data.title }}
+            </h1>
+            <MarkdownRenderer :content="post.data.content" />
+        </div>
     </AppLayout>
 </template>
