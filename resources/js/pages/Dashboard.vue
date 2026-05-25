@@ -16,6 +16,17 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: dashboard(),
     },
 ];
+
+const links = [
+    {
+        name: "Create Post",
+        href: PostController.create.url(),
+    },
+    {
+        name: "Posts",
+        href: PostController.index.url(),
+    },
+];
 </script>
 
 <template>
@@ -23,9 +34,10 @@ const breadcrumbs: BreadcrumbItem[] = [
     <Head title="Dashboard" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
-        <div v-if="user.role?.name === 'admin'" class="">
-            <Link :href="PostController.create.url()">
-                <p>Create Post</p>
+        <div v-if="user.role?.name === 'admin'">
+            <Link v-for="link in links" v-bind:key="link.name" :href="link.href"
+                class="m-2 border inline-flex rounded-sm p-2 text-lg">
+                <p>{{ link.name }}</p>
             </Link>
         </div>
     </AppLayout>
