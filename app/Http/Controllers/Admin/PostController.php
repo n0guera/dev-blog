@@ -82,7 +82,7 @@ class PostController extends Controller
     {
         $this->authorize('delete', $post);
 
-        $post->delete();
+        $post->delete($post);
 
         return redirect()->route('posts.index')
             ->with('success', 'Post deleted successfully.');
