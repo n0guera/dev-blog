@@ -6,8 +6,7 @@ use App\Http\Controllers\TagController;
 use App\Http\Controllers\VoteController;
 use Illuminate\Support\Facades\Route;
 
-Route::inertia('/', 'Welcome', [
-])->name('home');
+Route::inertia('/', 'Welcome')->name('home');
 
 Route::get('/posts', [PostController::class, 'index'])->name('posts.index');
 Route::get('/posts/{post}', [PostController::class, 'show'])->name('posts.show');

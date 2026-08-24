@@ -130,7 +130,7 @@ describe('PostController - Admin Routes', function () {
     test('admin can access create form', function () {
         $admin = User::factory()->admin()->create();
 
-        $response = $this->actingAs($admin)->get(route('posts.create'));
+        $response = $this->actingAs($admin)->get(route('admin.posts.create'));
 
         $response->assertStatus(200);
         $response->assertInertia(fn ($page) => $page
@@ -141,13 +141,13 @@ describe('PostController - Admin Routes', function () {
     test('regular user cannot access create form', function () {
         $user = User::factory()->regularUser()->create();
 
-        $response = $this->actingAs($user)->get(route('posts.create'));
+        $response = $this->actingAs($user)->get(route('admin.posts.create'));
 
         $response->assertForbidden();
     });
 
     test('unauthenticated user cannot access create form', function () {
-        $response = $this->get(route('posts.create'));
+        $response = $this->get(route('admin.posts.create'));
 
         $response->assertRedirect();
     });
@@ -157,12 +157,12 @@ describe('PostController - Admin Routes', function () {
         $status = PostStatus::factory()->draft()->create();
         $tag = Tag::factory()->create();
 
-        $response = $this->actingAs($admin)->post(route('posts.store'), [
+        $response = $this->actingAs($admin)->post(route('admin.posts.store'), [
             'title' => 'Test Post',
             'content' => 'Test content',
             'excerpt' => 'Test excerpt',
             'status_id' => $status->id,
-            'tags' => [$tag->id],
+            'tags' => [$tag->name],
         ]);
 
         $response->assertRedirect();
@@ -173,7 +173,7 @@ describe('PostController - Admin Routes', function () {
         $admin = User::factory()->admin()->create();
         $status = PostStatus::factory()->draft()->create();
 
-        $response = $this->actingAs($admin)->post(route('posts.store'), [
+        $response = $this->actingAs($admin)->post(route('admin.posts.store'), [
             'title' => 'Post Without Tags',
             'content' => 'Content here',
             'status_id' => $status->id,
@@ -186,7 +186,7 @@ describe('PostController - Admin Routes', function () {
     test('store fails with invalid data', function () {
         $admin = User::factory()->admin()->create();
 
-        $response = $this->actingAs($admin)->post(route('posts.store'), [
+        $response = $this->actingAs($admin)->post(route('admin.posts.store'), [
             'title' => '',
             'content' => '',
             'status_id' => 999,
@@ -199,7 +199,7 @@ describe('PostController - Admin Routes', function () {
         $admin = User::factory()->admin()->create();
         $status = PostStatus::factory()->draft()->create();
 
-        $response = $this->actingAs($admin)->post(route('posts.store'), [
+        $response = $this->actingAs($admin)->post(route('admin.posts.store'), [
             'title' => str_repeat('a', 256),
             'content' => 'Content',
             'status_id' => $status->id,
@@ -213,7 +213,7 @@ describe('PostController - Admin Routes', function () {
         $status = PostStatus::factory()->draft()->create();
         $post = Post::factory()->create(['user_id' => $admin->id, 'status_id' => $status->id]);
 
-        $response = $this->actingAs($admin)->get(route('posts.edit', $post));
+        $response = $this->actingAs($admin)->get(route('admin.posts.edit', $post));
 
         $response->assertStatus(200);
         $response->assertInertia(fn ($page) => $page
@@ -226,7 +226,7 @@ describe('PostController - Admin Routes', function () {
         $status = PostStatus::factory()->draft()->create();
         $post = Post::factory()->create(['user_id' => $admin->id, 'status_id' => $status->id]);
 
-        $response = $this->actingAs($admin)->put(route('posts.update', $post), [
+        $response = $this->actingAs($admin)->put(route('admin.posts.update', $post), [
             'title' => 'Updated Title',
             'content' => 'Updated content',
             'status_id' => $status->id,
@@ -242,11 +242,11 @@ describe('PostController - Admin Routes', function () {
         $post = Post::factory()->create(['user_id' => $admin->id, 'status_id' => $status->id]);
         $tag = Tag::factory()->create();
 
-        $response = $this->actingAs($admin)->put(route('posts.update', $post), [
+        $response = $this->actingAs($admin)->put(route('admin.posts.update', $post), [
             'title' => 'Updated Title',
             'content' => 'Updated content',
             'status_id' => $status->id,
-            'tags' => [$tag->id],
+            'tags' => [$tag->name],
         ]);
 
         $response->assertRedirect();
@@ -260,7 +260,7 @@ describe('PostController - Admin Routes', function () {
         $tag = Tag::factory()->create();
         $post->tags()->attach($tag);
 
-        $response = $this->actingAs($admin)->put(route('posts.update', $post), [
+        $response = $this->actingAs($admin)->put(route('admin.posts.update', $post), [
             'title' => 'Updated Title',
             'content' => 'Updated content',
             'status_id' => $status->id,
@@ -276,7 +276,7 @@ describe('PostController - Admin Routes', function () {
         $status = PostStatus::factory()->draft()->create();
         $post = Post::factory()->create(['user_id' => $admin->id, 'status_id' => $status->id]);
 
-        $response = $this->actingAs($admin)->put(route('posts.update', $post), [
+        $response = $this->actingAs($admin)->put(route('admin.posts.update', $post), [
             'title' => '',
             'content' => '',
             'status_id' => 999,
@@ -290,9 +290,9 @@ describe('PostController - Admin Routes', function () {
         $status = PostStatus::factory()->draft()->create();
         $post = Post::factory()->create(['user_id' => $admin->id, 'status_id' => $status->id]);
 
-        $response = $this->actingAs($admin)->delete(route('posts.destroy', $post));
+        $response = $this->actingAs($admin)->delete(route('admin.posts.destroy', $post));
 
-        $response->assertRedirect(route('posts.index'));
+        $response->assertRedirect(route('admin.posts.index'));
         $this->assertSoftDeleted($post);
     });
 
@@ -302,7 +302,7 @@ describe('PostController - Admin Routes', function () {
         $status = PostStatus::factory()->draft()->create();
         $post = Post::factory()->create(['user_id' => $admin->id, 'status_id' => $status->id]);
 
-        $response = $this->actingAs($user)->delete(route('posts.destroy', $post));
+        $response = $this->actingAs($user)->delete(route('admin.posts.destroy', $post));
 
         $response->assertForbidden();
     });

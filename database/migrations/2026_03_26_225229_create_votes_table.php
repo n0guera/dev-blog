@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('votes', function (Blueprint $table) {
             $table->id();
             $table->morphs('votable');
-            $table->foreignId('user_id')->constrained();
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->foreignId('vote_type_id')->constrained('vote_types');
             $table->unique(['votable_type', 'votable_id', 'user_id']);
             $table->timestamps();
