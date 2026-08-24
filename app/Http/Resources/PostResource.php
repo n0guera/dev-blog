@@ -20,6 +20,7 @@ class PostResource extends JsonResource
             'vote_score' => $this->vote_score,
             'up_votes_count' => $this->up_votes_count ?? 0,
             'down_votes_count' => $this->down_votes_count ?? 0,
+            'user_vote' => $this->user_vote ?? null,
             'status' => $this->whenLoaded('status', fn () => [
                 'id' => $this->status->id,
                 'name' => $this->status->name,

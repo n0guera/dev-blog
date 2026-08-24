@@ -22,7 +22,7 @@ class PostRequest extends FormRequest
             'status_id' => ['required', 'integer', Rule::exists('post_statuses', 'id')],
             'published_at' => ['nullable', 'date'],
             'tags' => ['nullable', 'array'],
-            'tags.*' => ['integer', Rule::exists('tags', 'id')],
+            'tags.*' => ['nullable', 'string', 'max:50'],
         ];
     }
 

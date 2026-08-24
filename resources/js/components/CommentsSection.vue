@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import CommentItem from './CommentItem.vue';
 import CommentForm from './CommentForm.vue';
+import CommentItem from './CommentItem.vue';
 
 defineProps<{
     postSlug: string;
@@ -27,18 +27,10 @@ defineProps<{
 
         <!-- Comments List -->
         <div class="divide-y divide-border">
-            <CommentItem
-                v-for="comment in comments"
-                :key="comment.id"
-                :comment="comment"
-                :post-slug="postSlug"
-            />
+            <CommentItem v-for="comment in comments" :key="comment.id" :comment="comment" :post-slug="postSlug" />
         </div>
 
-        <p
-            v-if="comments.length === 0"
-            class="py-8 text-center text-sm text-muted-foreground"
-        >
+        <p v-if="comments.length === 0" class="py-8 text-center text-sm text-muted-foreground">
             No comments yet. Be the first to share your thoughts!
         </p>
     </div>
