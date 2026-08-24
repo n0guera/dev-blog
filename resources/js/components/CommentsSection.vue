@@ -3,7 +3,7 @@ import CommentItem from './CommentItem.vue';
 import CommentForm from './CommentForm.vue';
 
 defineProps<{
-    postId: number;
+    postSlug: string;
     comments: Array<{
         id: number;
         content: string;
@@ -23,7 +23,7 @@ defineProps<{
         </h3>
 
         <!-- New Comment Form -->
-        <CommentForm :post-id="postId" />
+        <CommentForm :post-slug="postSlug" />
 
         <!-- Comments List -->
         <div class="divide-y divide-border">
@@ -31,7 +31,7 @@ defineProps<{
                 v-for="comment in comments"
                 :key="comment.id"
                 :comment="comment"
-                :post-id="postId"
+                :post-slug="postSlug"
             />
         </div>
 

@@ -17,7 +17,7 @@ interface Comment {
 
 const props = defineProps<{
     comment: Comment;
-    postId: number;
+    postSlug: string;
     depth?: number;
 }>();
 
@@ -69,6 +69,7 @@ function timeAgo(dateStr: string): string {
                     :votable-id="comment.id"
                     :initial-score="comment.vote_score"
                     :initial-vote="comment.user_vote"
+                    orientation="horizontal"
                 />
 
                 <button
@@ -102,7 +103,7 @@ function timeAgo(dateStr: string): string {
             <!-- Reply Form -->
             <div v-if="showReplyForm" class="mt-2">
                 <CommentForm
-                    :post-id="postId"
+                    :post-slug="postSlug"
                     :parent-id="comment.id"
                     @submit="showReplyForm = false"
                 />
@@ -115,7 +116,7 @@ function timeAgo(dateStr: string): string {
                 v-for="reply in comment.replies"
                 :key="reply.id"
                 :comment="reply"
-                :post-id="postId"
+                :post-slug="postSlug"
                 :depth="(depth ?? 0) + 1"
             />
         </div>

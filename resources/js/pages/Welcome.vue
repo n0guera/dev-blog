@@ -40,13 +40,22 @@ defineProps<{
         <!-- Latest Posts -->
         <section v-if="latestPosts?.length" class="pb-16">
             <h2 class="mb-6 text-2xl font-semibold text-foreground">Latest Posts</h2>
-            <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <div class="grid gap-4 sm:grid-cols-2">
                 <Link v-for="post in latestPosts" :key="post.id" :href="`/posts/${post.slug}`"
-                    class="block rounded-lg border border-border bg-card p-5 transition-shadow hover:shadow-md">
+                    class="flex min-h-[12rem] flex-col rounded-lg border border-border bg-card p-5 transition-shadow hover:shadow-md">
                     <h3 class="mb-1 text-lg font-semibold text-foreground">{{ post.title }}</h3>
-                    <p v-if="post.excerpt" class="mb-3 line-clamp-2 text-sm text-muted-foreground">
+                    <p v-if="post.excerpt" class="mb-3 line-clamp-2 flex-1 text-sm text-muted-foreground">
                         {{ post.excerpt }}
                     </p>
+                    <div v-if="post.tags?.length" class="mb-3 flex flex-wrap gap-1.5">
+                        <span
+                            v-for="tag in post.tags"
+                            :key="tag.id"
+                            class="inline-block rounded-full bg-secondary px-2.5 py-0.5 text-xs font-medium text-secondary-foreground"
+                        >
+                            {{ tag.name }}
+                        </span>
+                    </div>
                     <div class="text-xs text-muted-foreground">{{ post.user.name }}</div>
                 </Link>
             </div>

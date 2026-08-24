@@ -2,7 +2,7 @@
 import { useForm } from '@inertiajs/vue3';
 
 const props = defineProps<{
-    postId: number;
+    postSlug: string;
     parentId?: number | null;
     onSubmit?: () => void;
 }>();
@@ -13,7 +13,7 @@ const form = useForm({
 });
 
 function submit() {
-    form.post(`/posts/${props.postId}/comments`, {
+    form.post(`/posts/${props.postSlug}/comments`, {
         preserveState: true,
         onSuccess: () => {
             form.reset('content');

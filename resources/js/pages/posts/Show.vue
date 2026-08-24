@@ -12,7 +12,7 @@ defineProps<{ post: any }>();
 <template>
     <Head :title="post.data.title" />
     <AppLayout>
-        <article class="mx-auto max-w-3xl">
+        <article class="mx-auto w-full max-w-3xl px-4 sm:px-6">
             <!-- Header -->
             <div class="mb-8">
                 <h1 class="mb-3 text-3xl font-bold text-foreground">
@@ -44,7 +44,7 @@ defineProps<{ post: any }>();
                         :initial-vote="post.data.user_vote ?? null"
                     />
                 </div>
-                <div class="min-w-0 flex-1 prose prose-neutral dark:prose-invert">
+                <div class="min-w-0 flex-1 prose prose-neutral dark:prose-invert lg:prose-lg">
                     <MarkdownRenderer :content="post.data.content" />
                 </div>
             </div>
@@ -62,7 +62,7 @@ defineProps<{ post: any }>();
             <!-- Comments -->
             <div class="mt-12 border-t border-border pt-8">
                 <CommentsSection
-                    :post-id="post.data.id"
+                    :post-slug="post.data.slug"
                     :comments="post.data.comments ?? []"
                 />
             </div>

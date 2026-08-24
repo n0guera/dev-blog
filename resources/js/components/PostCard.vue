@@ -29,13 +29,13 @@ function formatDate(dateStr: string | null): string {
 <template>
     <Link
         :href="`/posts/${post.slug}`"
-        class="block rounded-lg border border-border bg-card p-5 transition-shadow hover:shadow-md"
+        class="flex min-h-[10rem] flex-col rounded-lg border border-border bg-card p-5 transition-shadow hover:shadow-md"
     >
         <h2 class="mb-1 text-lg font-semibold text-foreground">
             {{ post.title }}
         </h2>
 
-        <p v-if="post.excerpt" class="mb-3 line-clamp-2 text-sm text-muted-foreground">
+        <p v-if="post.excerpt" class="mb-3 line-clamp-2 flex-1 text-sm text-muted-foreground">
             {{ post.excerpt }}
         </p>
 

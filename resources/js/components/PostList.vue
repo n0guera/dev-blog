@@ -31,7 +31,7 @@ defineProps<{
             Posts tagged: <span class="text-primary">{{ showTag }}</span>
         </h2>
 
-        <div v-if="posts.data.length" class="space-y-4">
+        <div v-if="posts.data.length" class="grid gap-4 sm:grid-cols-2">
             <PostCard
                 v-for="post in posts.data"
                 :key="post.id"
