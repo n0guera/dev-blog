@@ -7,8 +7,10 @@ use App\Http\Requests\PostRequest;
 use App\Http\Resources\PostResource;
 use App\Models\Post;
 use App\Models\PostStatus;
+use App\Models\Tag;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -32,6 +34,7 @@ class PostController extends Controller
 
         return Inertia::render('admin/posts/Create', [
             'statuses' => PostStatus::all(),
+            'tags' => Tag::all(),
         ]);
     }
 
@@ -43,11 +46,9 @@ class PostController extends Controller
         $post->user_id = $request->user()->id;
         $post->save();
 
-        if ($request->has('tags')) {
-            $post->tags()->attach($request->input('tags'));
-        }
+        $this->syncTags($post, $request->input('tags', []));
 
-        return redirect()->route('posts.index')
+        return redirect()->route('admin.posts.index')
             ->with('success', 'Post created successfully.');
     }
 
@@ -58,6 +59,7 @@ class PostController extends Controller
         return Inertia::render('admin/posts/Edit', [
             'post' => new PostResource($post->load('tags')),
             'statuses' => PostStatus::all(),
+            'tags' => Tag::all(),
         ]);
     }
 
@@ -68,13 +70,9 @@ class PostController extends Controller
         $post->fill($request->validated());
         $post->save();
 
-        if ($request->has('tags')) {
-            $post->tags()->sync($request->input('tags'));
-        } else {
-            $post->tags()->detach();
-        }
+        $this->syncTags($post, $request->input('tags', []));
 
-        return redirect()->route('posts.index')
+        return redirect()->route('admin.posts.index')
             ->with('success', 'Post updated successfully.');
     }
 
@@ -82,9 +80,9 @@ class PostController extends Controller
     {
         $this->authorize('delete', $post);
 
-        $post->delete();
+        $post->delete($post);
 
-        return redirect()->route('posts.index')
+        return redirect()->route('admin.posts.index')
             ->with('success', 'Post deleted successfully.');
     }
 
@@ -107,5 +105,31 @@ class PostController extends Controller
         $image->storeAs('posts', $filename, 'public');
 
         return ['url' => "/storage/posts/{$filename}"];
+    }
+
+    /**
+     * Sync tags for a post, creating new tags if they don't exist.
+     *
+     * @param  array<int|string, string>  $tags
+     */
+    private function syncTags(Post $post, array $tags): void
+    {
+        $tagIds = collect($tags)->map(function (string $tagName) {
+            $tagName = trim($tagName);
+            if ($tagName === '') {
+                return null;
+            }
+
+            $slug = Str::slug($tagName);
+
+            $tag = Tag::firstOrCreate(
+                ['slug' => $slug],
+                ['name' => $tagName]
+            );
+
+            return $tag->id;
+        })->filter()->values()->all();
+
+        $post->tags()->sync($tagIds);
     }
 }

@@ -1,14 +1,30 @@
 <script setup lang="ts">
-import { Head } from '@inertiajs/vue3';
-import PlaceholderPattern from '@/components/PlaceholderPattern.vue';
+import { Head, Link, usePage } from '@inertiajs/vue3';
+import { computed } from 'vue';
+import PostController from '@/actions/App/Http/Controllers/Admin/PostController';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { dashboard } from '@/routes';
 import type { BreadcrumbItem } from '@/types';
+
+const page = usePage();
+
+const user = computed(() => page.props.auth.user);
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Dashboard',
         href: dashboard(),
+    },
+];
+
+const links = [
+    {
+        name: 'Create Post',
+        href: PostController.create.url(),
+    },
+    {
+        name: 'Posts',
+        href: PostController.index.url(),
     },
 ];
 </script>
@@ -17,31 +33,15 @@ const breadcrumbs: BreadcrumbItem[] = [
     <Head title="Dashboard" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
-        <div
-            class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4"
-        >
-            <div class="grid auto-rows-min gap-4 md:grid-cols-3">
-                <div
-                    class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border"
-                >
-                    <PlaceholderPattern />
-                </div>
-                <div
-                    class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border"
-                >
-                    <PlaceholderPattern />
-                </div>
-                <div
-                    class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border"
-                >
-                    <PlaceholderPattern />
-                </div>
-            </div>
-            <div
-                class="relative min-h-[100vh] flex-1 rounded-xl border border-sidebar-border/70 md:min-h-min dark:border-sidebar-border"
+        <div v-if="user.role?.name === 'admin'">
+            <Link
+                v-for="link in links"
+                v-bind:key="link.name"
+                :href="link.href"
+                class="m-2 inline-flex rounded-sm border p-2 text-lg"
             >
-                <PlaceholderPattern />
-            </div>
+                <p>{{ link.name }}</p>
+            </Link>
         </div>
     </AppLayout>
 </template>

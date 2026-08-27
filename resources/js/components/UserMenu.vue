@@ -23,7 +23,11 @@ const isAdmin = computed(() => user.value?.role?.name === 'admin');
 <template>
     <DropdownMenu v-if="user">
         <DropdownMenuTrigger as-child>
-            <Button variant="ghost" size="icon" class="relative h-9 w-9 rounded-full">
+            <Button
+                variant="ghost"
+                size="icon"
+                class="relative h-9 w-9 rounded-full"
+            >
                 <UserInfo :user="user" />
             </Button>
         </DropdownMenuTrigger>

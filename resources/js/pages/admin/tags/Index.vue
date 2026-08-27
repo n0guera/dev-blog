@@ -2,18 +2,12 @@
 import { Head, Link, router } from '@inertiajs/vue3';
 
 defineProps<{
-    posts: {
+    tags: {
         data: Array<{
             id: number;
-            title: string;
+            name: string;
             slug: string;
-            user: {
-                name: string;
-            };
-            status: {
-                name: string;
-            };
-            votes_count: number;
+            posts_count: number;
         }>;
         from: number | null;
         to: number | null;
@@ -24,47 +18,42 @@ defineProps<{
 }>();
 
 function destroy(id: number) {
-    if (confirm('Are you sure you want to delete this post?')) {
-        router.delete(`/admin/posts/${id}`, { preserveState: true });
+    if (confirm('Are you sure you want to delete this tag?')) {
+        router.delete(`/admin/tags/${id}`, { preserveState: true });
     }
 }
 </script>
 
 <template>
-    <Head title="Manage Posts" />
+    <Head title="Manage Tags" />
     <div class="space-y-4">
         <div class="flex items-center justify-between">
-            <h1 class="text-2xl font-bold text-foreground">Posts</h1>
+            <h1 class="text-2xl font-bold text-foreground">Tags</h1>
             <Link
-                href="/admin/posts/create"
+                href="/admin/tags/create"
                 class="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90"
             >
-                Create Post
+                Create Tag
             </Link>
         </div>
 
-        <table class="min-w-full divide-y divide-border border border-border">
+        <table class="min-w-full divide-y divide-gray-200 border border-border">
             <thead class="bg-muted">
                 <tr>
                     <th
                         class="px-4 py-2 text-left text-sm font-medium text-foreground"
                     >
-                        Title
+                        Name
                     </th>
                     <th
                         class="px-4 py-2 text-left text-sm font-medium text-foreground"
                     >
-                        Author
+                        Slug
                     </th>
                     <th
                         class="px-4 py-2 text-left text-sm font-medium text-foreground"
                     >
-                        Status
-                    </th>
-                    <th
-                        class="px-4 py-2 text-left text-sm font-medium text-foreground"
-                    >
-                        Votes
+                        Posts
                     </th>
                     <th
                         class="px-4 py-2 text-left text-sm font-medium text-foreground"
@@ -75,25 +64,22 @@ function destroy(id: number) {
             </thead>
             <tbody>
                 <tr
-                    v-for="post in posts.data"
-                    :key="post.id"
+                    v-for="tag in tags.data"
+                    :key="tag.id"
                     class="border-t border-border"
                 >
                     <td class="px-4 py-2 text-sm text-foreground">
-                        {{ post.title }}
-                    </td>
-                    <td class="px-4 py-2 text-sm text-foreground">
-                        {{ post.user.name }}
+                        {{ tag.name }}
                     </td>
                     <td class="px-4 py-2 text-sm text-muted-foreground">
-                        {{ post.status.name }}
+                        {{ tag.slug }}
                     </td>
-                    <td class="px-4 py-2 text-sm text-foreground">
-                        {{ post.votes_count }}
+                    <td class="px-4 py-2 text-sm text-muted-foreground">
+                        {{ tag.posts_count }}
                     </td>
                     <td class="space-x-2 px-4 py-2">
                         <Link
-                            :href="`/admin/posts/${post.slug}/edit`"
+                            :href="`/admin/tags/${tag.id}/edit`"
                             class="text-sm text-primary hover:underline"
                         >
                             Edit
@@ -101,7 +87,7 @@ function destroy(id: number) {
                         <button
                             type="button"
                             class="text-sm text-destructive hover:underline"
-                            @click="destroy(post.id)"
+                            @click="destroy(tag.id)"
                         >
                             Delete
                         </button>
@@ -111,31 +97,30 @@ function destroy(id: number) {
         </table>
 
         <p
-            v-if="posts.data.length === 0"
+            v-if="tags.data.length === 0"
             class="py-8 text-center text-sm text-muted-foreground"
         >
-            No posts yet.
+            No tags yet.
         </p>
 
         <div
-            v-if="posts.total > 0"
+            v-if="tags.total > 0"
             class="flex items-center justify-between text-sm text-muted-foreground"
         >
             <span
-                >Showing {{ posts.from }}–{{ posts.to }} of
-                {{ posts.total }}</span
+                >Showing {{ tags.from }}–{{ tags.to }} of {{ tags.total }}</span
             >
             <div class="flex gap-2">
                 <Link
-                    v-if="posts.prev_page_url"
-                    :href="posts.prev_page_url"
+                    v-if="tags.prev_page_url"
+                    :href="tags.prev_page_url"
                     class="rounded-md bg-secondary px-3 py-1.5 text-secondary-foreground transition-opacity hover:opacity-80"
                 >
                     Prev
                 </Link>
                 <Link
-                    v-if="posts.next_page_url"
-                    :href="posts.next_page_url"
+                    v-if="tags.next_page_url"
+                    :href="tags.next_page_url"
                     class="rounded-md bg-secondary px-3 py-1.5 text-secondary-foreground transition-opacity hover:opacity-80"
                 >
                     Next

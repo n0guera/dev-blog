@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Post;
 use App\Models\Tag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -55,6 +56,16 @@ class HandleInertiaRequests extends Middleware
                         'slug' => $tag->slug,
                         'url' => '/tags/'.$tag->slug,
                     ])
+            ),
+            'latestPosts' => Cache::remember(
+                'latest_posts',
+                3600,
+                fn () => Post::whereHas('status', fn ($q) => $q->where('name', 'published'))
+                    ->with(['user', 'tags'])
+                    ->withVotes()
+                    ->latest()
+                    ->limit(6)
+                    ->get()
             ),
         ];
     }

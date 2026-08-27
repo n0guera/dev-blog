@@ -30,5 +30,9 @@ class DatabaseSeeder extends Seeder
             'email' => 'test@example.com',
             'role_id' => $userRole?->id,
         ]);
+
+        $this->call([
+            PostSeeder::class,
+        ]);
     }
 }

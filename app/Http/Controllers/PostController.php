@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Resources\PostResource;
 use App\Models\Post;
 use App\Models\Tag;
+use App\Models\Vote;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -24,7 +25,24 @@ class PostController extends Controller
 
     public function show(Post $post): Response
     {
-        $post->load(['user', 'tags', 'comments.user', 'comments.votes', 'status']);
+        $post->load(['user', 'tags', 'status']);
+        $post->loadCount(['upVotes', 'downVotes']);
+        $post->load(['comments' => function ($query) {
+            $query->whereNull('parent_id')
+                ->with(['user', 'votes', 'replies.user', 'replies.votes'])
+                ->oldest();
+        }]);
+
+        if (auth()->check()) {
+            $userVote = Vote::where('votable_type', Post::class)
+                ->where('votable_id', $post->id)
+                ->where('user_id', auth()->id())
+                ->first();
+
+            $post->user_vote = $userVote ? $userVote->voteType->name : null;
+        } else {
+            $post->user_vote = null;
+        }
 
         return Inertia::render('posts/Show', ['post' => new PostResource($post)]);
     }
