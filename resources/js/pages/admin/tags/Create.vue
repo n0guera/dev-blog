@@ -18,7 +18,10 @@ function submit() {
 
         <form @submit.prevent="submit" class="max-w-md space-y-4">
             <div>
-                <label for="name" class="mb-1 block text-sm font-medium text-foreground">
+                <label
+                    for="name"
+                    class="mb-1 block text-sm font-medium text-foreground"
+                >
                     Name
                 </label>
                 <input
@@ -26,9 +29,12 @@ function submit() {
                     v-model="form.name"
                     type="text"
                     placeholder="Tag name"
-                    class="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring"
+                    class="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:ring-1 focus:ring-ring focus:outline-none"
                 />
-                <p v-if="form.errors.name" class="mt-1 text-sm text-destructive">
+                <p
+                    v-if="form.errors.name"
+                    class="mt-1 text-sm text-destructive"
+                >
                     {{ form.errors.name }}
                 </p>
                 <p class="mt-1 text-xs text-muted-foreground">

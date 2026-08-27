@@ -17,7 +17,10 @@ defineProps<{
 }>();
 
 function formatDate(dateStr: string | null): string {
-    if (!dateStr) return '';
+    if (!dateStr) {
+        return '';
+    }
+
     return new Date(dateStr).toLocaleDateString('en-US', {
         year: 'numeric',
         month: 'short',
@@ -35,7 +38,10 @@ function formatDate(dateStr: string | null): string {
             {{ post.title }}
         </h2>
 
-        <p v-if="post.excerpt" class="mb-3 line-clamp-2 flex-1 text-sm text-muted-foreground">
+        <p
+            v-if="post.excerpt"
+            class="mb-3 line-clamp-2 flex-1 text-sm text-muted-foreground"
+        >
             {{ post.excerpt }}
         </p>
 
@@ -51,11 +57,19 @@ function formatDate(dateStr: string | null): string {
         <div class="flex items-center gap-2 text-xs text-muted-foreground">
             <span>{{ post.user.name }}</span>
             <span v-if="post.published_at">&middot;</span>
-            <span v-if="post.published_at">{{ formatDate(post.published_at) }}</span>
+            <span v-if="post.published_at">{{
+                formatDate(post.published_at)
+            }}</span>
             <span>&middot;</span>
-            <span>{{ post.vote_score }} {{ post.vote_score === 1 ? 'vote' : 'votes' }}</span>
+            <span
+                >{{ post.vote_score }}
+                {{ post.vote_score === 1 ? 'vote' : 'votes' }}</span
+            >
             <span>&middot;</span>
-            <span>{{ post.comments_count }} {{ post.comments_count === 1 ? 'comment' : 'comments' }}</span>
+            <span
+                >{{ post.comments_count }}
+                {{ post.comments_count === 1 ? 'comment' : 'comments' }}</span
+            >
         </div>
     </Link>
 </template>

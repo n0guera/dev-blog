@@ -34,18 +34,33 @@ function timeAgo(dateStr: string): string {
     const now = new Date();
     const date = new Date(dateStr);
     const seconds = Math.floor((now.getTime() - date.getTime()) / 1000);
-    if (seconds < 60) return 'just now';
+
+    if (seconds < 60) {
+        return 'just now';
+    }
+
     const minutes = Math.floor(seconds / 60);
-    if (minutes < 60) return `${minutes}m ago`;
+
+    if (minutes < 60) {
+        return `${minutes}m ago`;
+    }
+
     const hours = Math.floor(minutes / 60);
-    if (hours < 24) return `${hours}h ago`;
+
+    if (hours < 24) {
+        return `${hours}h ago`;
+    }
+
     const days = Math.floor(hours / 24);
+
     return `${days}d ago`;
 }
 </script>
 
 <template>
-    <div :class="depth && depth > 0 ? 'ml-6 border-l-2 border-border pl-4' : ''">
+    <div
+        :class="depth && depth > 0 ? 'ml-6 border-l-2 border-border pl-4' : ''"
+    >
         <div class="space-y-2 py-3">
             <!-- Header -->
             <div class="flex items-center gap-2">
@@ -64,38 +79,69 @@ function timeAgo(dateStr: string): string {
 
             <!-- Actions -->
             <div class="flex items-center gap-3">
-                <VoteButton :votable-type="'comment'" :votable-id="comment.id" :initial-score="comment.vote_score"
-                    :initial-vote="comment.user_vote" orientation="horizontal" />
+                <VoteButton
+                    :votable-type="'comment'"
+                    :votable-id="comment.id"
+                    :initial-score="comment.vote_score"
+                    :initial-vote="comment.user_vote"
+                    orientation="horizontal"
+                />
 
-                <button v-if="currentUser" type="button"
+                <button
+                    v-if="currentUser"
+                    type="button"
                     class="text-xs text-muted-foreground transition-colors hover:text-foreground"
-                    @click="showReplyForm = !showReplyForm">
+                    @click="showReplyForm = !showReplyForm"
+                >
                     Reply
                 </button>
 
-                <button v-if="canDelete" type="button"
+                <button
+                    v-if="canDelete"
+                    type="button"
                     class="text-xs text-muted-foreground transition-colors hover:text-destructive"
-                    @click="$inertia.delete(`/comments/${comment.id}`, { preserveState: true })">
+                    @click="
+                        $inertia.delete(`/comments/${comment.id}`, {
+                            preserveState: true,
+                        })
+                    "
+                >
                     Delete
                 </button>
 
-                <button v-if="comment.replies?.length" type="button"
+                <button
+                    v-if="comment.replies?.length"
+                    type="button"
                     class="text-xs text-muted-foreground transition-colors hover:text-foreground"
-                    @click="collapsed = !collapsed">
-                    {{ collapsed ? `Show replies (${comment.replies.length})` : `Hide replies` }}
+                    @click="collapsed = !collapsed"
+                >
+                    {{
+                        collapsed
+                            ? `Show replies (${comment.replies.length})`
+                            : `Hide replies`
+                    }}
                 </button>
             </div>
 
             <!-- Reply Form -->
             <div v-if="showReplyForm" class="mt-2">
-                <CommentForm :post-slug="postSlug" :parent-id="comment.id" @submit="showReplyForm = false" />
+                <CommentForm
+                    :post-slug="postSlug"
+                    :parent-id="comment.id"
+                    @submit="showReplyForm = false"
+                />
             </div>
         </div>
 
         <!-- Nested Replies -->
         <div v-if="!collapsed && comment.replies?.length">
-            <CommentItem v-for="reply in comment.replies" :key="reply.id" :comment="reply" :post-slug="postSlug"
-                :depth="(depth ?? 0) + 1" />
+            <CommentItem
+                v-for="reply in comment.replies"
+                :key="reply.id"
+                :comment="reply"
+                :post-slug="postSlug"
+                :depth="(depth ?? 0) + 1"
+            />
         </div>
     </div>
 </template>

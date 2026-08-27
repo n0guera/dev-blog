@@ -2,15 +2,18 @@
 import { usePage } from '@inertiajs/vue3';
 import { computed, ref } from 'vue';
 
-const props = withDefaults(defineProps<{
-    votableType: 'post' | 'comment';
-    votableId: number;
-    initialScore: number;
-    initialVote?: 'up' | 'down' | null;
-    orientation?: 'vertical' | 'horizontal';
-}>(), {
-    orientation: 'vertical',
-});
+const props = withDefaults(
+    defineProps<{
+        votableType: 'post' | 'comment';
+        votableId: number;
+        initialScore: number;
+        initialVote?: 'up' | 'down' | null;
+        orientation?: 'vertical' | 'horizontal';
+    }>(),
+    {
+        orientation: 'vertical',
+    },
+);
 
 const page = usePage();
 const isAuthenticated = computed(() => !!page.props.auth?.user);
@@ -31,7 +34,9 @@ const downvoteClasses = computed(() =>
 );
 
 async function vote(direction: 'up' | 'down') {
-    if (!isAuthenticated.value) return;
+    if (!isAuthenticated.value) {
+        return;
+    }
 
     const endpoint =
         currentVote.value === direction
@@ -56,20 +61,27 @@ async function vote(direction: 'up' | 'down') {
     if (response.ok) {
         const data = await response.json();
         score.value = data.score;
-        currentVote.value =
-            currentVote.value === direction ? null : direction;
+        currentVote.value = currentVote.value === direction ? null : direction;
     }
 }
 </script>
 
 <template>
-    <div :class="orientation === 'horizontal' ? 'flex items-center gap-1' : 'flex flex-col items-center gap-1'">
+    <div
+        :class="
+            orientation === 'horizontal'
+                ? 'flex items-center gap-1'
+                : 'flex flex-col items-center gap-1'
+        "
+    >
         <button
             type="button"
             :disabled="!isAuthenticated"
             :class="[
                 upvoteClasses,
-                isAuthenticated ? 'cursor-pointer' : 'cursor-not-allowed opacity-40',
+                isAuthenticated
+                    ? 'cursor-pointer'
+                    : 'cursor-not-allowed opacity-40',
             ]"
             class="transition-colors"
             @click="vote('up')"
@@ -89,7 +101,9 @@ async function vote(direction: 'up' | 'down') {
             </svg>
         </button>
 
-        <span class="min-w-[2ch] text-center text-sm font-medium text-foreground">
+        <span
+            class="min-w-[2ch] text-center text-sm font-medium text-foreground"
+        >
             {{ score }}
         </span>
 
@@ -98,7 +112,9 @@ async function vote(direction: 'up' | 'down') {
             :disabled="!isAuthenticated"
             :class="[
                 downvoteClasses,
-                isAuthenticated ? 'cursor-pointer' : 'cursor-not-allowed opacity-40',
+                isAuthenticated
+                    ? 'cursor-pointer'
+                    : 'cursor-not-allowed opacity-40',
             ]"
             class="transition-colors"
             @click="vote('down')"

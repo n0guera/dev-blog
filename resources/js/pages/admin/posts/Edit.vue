@@ -14,7 +14,9 @@ const form = useForm({
     excerpt: props.post.data.excerpt ?? '',
     content: props.post.data.content,
     status_id: props.post.data.status?.id ?? '',
-    tags: props.post.data.tags ?? [] as Array<{ id: number; name: string; slug: string }>,
+    tags:
+        props.post.data.tags ??
+        ([] as Array<{ id: number; name: string; slug: string }>),
 });
 
 const submit = () => {
@@ -32,7 +34,10 @@ const submit = () => {
     <AppLayout>
         <div class="mx-auto max-w-3xl space-y-6">
             <h1 class="text-2xl font-bold text-foreground">Edit Post</h1>
-            <form @submit.prevent="submit" class="space-y-6 rounded-lg border border-border bg-card p-6">
+            <form
+                @submit.prevent="submit"
+                class="space-y-6 rounded-lg border border-border bg-card p-6"
+            >
                 <PostForm
                     :form="form"
                     :statuses="statuses"

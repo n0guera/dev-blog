@@ -32,17 +32,10 @@ defineProps<{
         </h2>
 
         <div v-if="posts.data.length" class="grid gap-4 sm:grid-cols-2">
-            <PostCard
-                v-for="post in posts.data"
-                :key="post.id"
-                :post="post"
-            />
+            <PostCard v-for="post in posts.data" :key="post.id" :post="post" />
         </div>
 
-        <p
-            v-else
-            class="py-12 text-center text-sm text-muted-foreground"
-        >
+        <p v-else class="py-12 text-center text-sm text-muted-foreground">
             No posts found.
         </p>
 

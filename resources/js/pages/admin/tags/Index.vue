@@ -40,17 +40,43 @@ function destroy(id: number) {
         <table class="min-w-full divide-y divide-gray-200 border border-border">
             <thead class="bg-muted">
                 <tr>
-                    <th class="px-4 py-2 text-left text-sm font-medium text-foreground">Name</th>
-                    <th class="px-4 py-2 text-left text-sm font-medium text-foreground">Slug</th>
-                    <th class="px-4 py-2 text-left text-sm font-medium text-foreground">Posts</th>
-                    <th class="px-4 py-2 text-left text-sm font-medium text-foreground">Actions</th>
+                    <th
+                        class="px-4 py-2 text-left text-sm font-medium text-foreground"
+                    >
+                        Name
+                    </th>
+                    <th
+                        class="px-4 py-2 text-left text-sm font-medium text-foreground"
+                    >
+                        Slug
+                    </th>
+                    <th
+                        class="px-4 py-2 text-left text-sm font-medium text-foreground"
+                    >
+                        Posts
+                    </th>
+                    <th
+                        class="px-4 py-2 text-left text-sm font-medium text-foreground"
+                    >
+                        Actions
+                    </th>
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="tag in tags.data" :key="tag.id" class="border-t border-border">
-                    <td class="px-4 py-2 text-sm text-foreground">{{ tag.name }}</td>
-                    <td class="px-4 py-2 text-sm text-muted-foreground">{{ tag.slug }}</td>
-                    <td class="px-4 py-2 text-sm text-muted-foreground">{{ tag.posts_count }}</td>
+                <tr
+                    v-for="tag in tags.data"
+                    :key="tag.id"
+                    class="border-t border-border"
+                >
+                    <td class="px-4 py-2 text-sm text-foreground">
+                        {{ tag.name }}
+                    </td>
+                    <td class="px-4 py-2 text-sm text-muted-foreground">
+                        {{ tag.slug }}
+                    </td>
+                    <td class="px-4 py-2 text-sm text-muted-foreground">
+                        {{ tag.posts_count }}
+                    </td>
                     <td class="space-x-2 px-4 py-2">
                         <Link
                             :href="`/admin/tags/${tag.id}/edit`"
@@ -70,7 +96,10 @@ function destroy(id: number) {
             </tbody>
         </table>
 
-        <p v-if="tags.data.length === 0" class="py-8 text-center text-sm text-muted-foreground">
+        <p
+            v-if="tags.data.length === 0"
+            class="py-8 text-center text-sm text-muted-foreground"
+        >
             No tags yet.
         </p>
 
@@ -78,7 +107,9 @@ function destroy(id: number) {
             v-if="tags.total > 0"
             class="flex items-center justify-between text-sm text-muted-foreground"
         >
-            <span>Showing {{ tags.from }}–{{ tags.to }} of {{ tags.total }}</span>
+            <span
+                >Showing {{ tags.from }}–{{ tags.to }} of {{ tags.total }}</span
+            >
             <div class="flex gap-2">
                 <Link
                     v-if="tags.prev_page_url"

@@ -3,7 +3,7 @@ import { Head, Link, useForm } from '@inertiajs/vue3';
 import PostForm from '@/components/PostForm.vue';
 import AppLayout from '@/layouts/AppLayout.vue';
 
-const props = defineProps<{
+defineProps<{
     statuses: any;
     tags: Array<{ id: number; name: string; slug: string }>;
 }>();
@@ -31,7 +31,10 @@ const submit = () => {
     <AppLayout>
         <div class="mx-auto w-full max-w-5xl space-y-6 px-4 sm:px-6">
             <h1 class="text-2xl font-bold text-foreground">Create Post</h1>
-            <form @submit.prevent="submit" class="space-y-6 rounded-lg border border-border bg-card p-6">
+            <form
+                @submit.prevent="submit"
+                class="space-y-6 rounded-lg border border-border bg-card p-6"
+            >
                 <PostForm
                     :form="form"
                     :statuses="statuses"
