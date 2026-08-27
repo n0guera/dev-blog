@@ -1,3 +1,4 @@
 pnpm run format
 pnpm run lint
+composer lint
 php artisan test

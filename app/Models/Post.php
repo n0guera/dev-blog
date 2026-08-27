@@ -62,13 +62,13 @@ class Post extends Model
     public function upVotes(): MorphMany
     {
         return $this->morphMany(Vote::class, 'votable')
-            ->whereHas('voteType', fn($q) => $q->where('name', 'up'));
+            ->whereHas('voteType', fn ($q) => $q->where('name', 'up'));
     }
 
     public function downVotes(): MorphMany
     {
         return $this->morphMany(Vote::class, 'votable')
-            ->whereHas('voteType', fn($q) => $q->where('name', 'down'));
+            ->whereHas('voteType', fn ($q) => $q->where('name', 'down'));
     }
 
     public function scopeWithVotes($query): Builder
