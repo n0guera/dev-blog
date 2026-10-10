@@ -48,7 +48,9 @@ function destroy(slug: string): void {
                     description="Manage all blog posts, their status and votes."
                 />
                 <Button as-child>
-                    <Link :href="PostController.create.url()"> Create Post </Link>
+                    <Link :href="PostController.create.url()">
+                        Create Post
+                    </Link>
                 </Button>
             </div>
 

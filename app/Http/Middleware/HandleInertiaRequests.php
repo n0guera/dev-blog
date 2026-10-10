@@ -56,6 +56,8 @@ class HandleInertiaRequests extends Middleware
                         'slug' => $tag->slug,
                         'url' => '/tags/'.$tag->slug,
                     ])
+                    ->values()
+                    ->all()
             ),
             'latestPosts' => Cache::remember(
                 'latest_posts',
@@ -66,6 +68,7 @@ class HandleInertiaRequests extends Middleware
                     ->latest()
                     ->limit(6)
                     ->get()
+                    ->toArray()
             ),
         ];
     }
