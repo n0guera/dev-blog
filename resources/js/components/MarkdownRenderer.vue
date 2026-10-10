@@ -17,6 +17,6 @@ const compiledMarkdown = computed(() => {
 <template>
     <div
         v-html="compiledMarkdown"
-        class="prose prose-neutral dark:prose-invert"
+        class="prose max-w-none prose-neutral dark:prose-invert"
     ></div>
 </template>

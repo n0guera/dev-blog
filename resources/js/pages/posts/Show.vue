@@ -12,7 +12,7 @@ defineProps<{ post: any }>();
 <template>
     <Head :title="post.data.title" />
     <AppLayout>
-        <article class="mx-auto w-full max-w-3xl px-4 sm:px-6">
+        <article class="mx-auto w-full max-w-7xl px-4 sm:px-6">
             <!-- Header -->
             <div class="mb-8">
                 <h1 class="mb-3 text-3xl font-bold text-foreground">
@@ -59,7 +59,7 @@ defineProps<{ post: any }>();
                     />
                 </div>
                 <div
-                    class="prose min-w-0 flex-1 prose-neutral lg:prose-lg dark:prose-invert"
+                    class="prose max-w-none min-w-0 flex-1 prose-neutral lg:prose-lg dark:prose-invert"
                 >
                     <MarkdownRenderer :content="post.data.content" />
                 </div>
