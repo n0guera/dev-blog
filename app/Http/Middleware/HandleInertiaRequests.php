@@ -60,7 +60,7 @@ class HandleInertiaRequests extends Middleware
                     ->all()
             ),
             'latestPosts' => Cache::remember(
-                'latest_posts',
+                Post::LATEST_POSTS_CACHE_KEY,
                 3600,
                 fn () => Post::whereHas('status', fn ($q) => $q->where('name', 'published'))
                     ->with(['user', 'tags'])

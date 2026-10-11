@@ -210,6 +210,24 @@ describe('PostController - Admin Routes', function () {
         $response->assertRedirect();
     });
 
+    test('publishing a new post refreshes the latest posts cache', function () {
+        $admin = User::factory()->admin()->create();
+        $published = PostStatus::factory()->published()->create();
+
+        $this->get(route('home'))->assertOk();
+
+        $this->actingAs($admin)->post(route('admin.posts.store'), [
+            'title' => 'Freshly Published',
+            'content' => 'Body content',
+            'status_id' => $published->id,
+        ])->assertRedirect();
+
+        $this->get(route('home'))->assertInertia(fn ($page) => $page
+            ->has('latestPosts', 1)
+            ->where('latestPosts.0.title', 'Freshly Published')
+        );
+    });
+
     test('admin can store a new post', function () {
         $admin = User::factory()->admin()->create();
         $status = PostStatus::factory()->draft()->create();
