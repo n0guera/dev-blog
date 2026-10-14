@@ -146,6 +146,35 @@ describe('CommentController', function () {
         });
     });
 
+    describe('rate limiting', function () {
+        test('store returns 429 after exceeding the comments rate limit', function () {
+            $user = User::factory()->create();
+            $status = PostStatus::factory()->published()->create();
+            $post = Post::factory()->create(['status_id' => $status->id]);
+
+            $this->actingAs($user);
+
+            foreach (range(1, 10) as $i) {
+                $this->post(route('comments.store', $post), [
+                    'content' => "Comment number {$i}",
+                ])->assertRedirect();
+            }
+
+            $this->post(route('comments.store', $post), [
+                'content' => 'One comment too many',
+            ])->assertTooManyRequests();
+        });
+
+        test('index is not rate limited', function () {
+            $status = PostStatus::factory()->published()->create();
+            $post = Post::factory()->create(['status_id' => $status->id]);
+
+            foreach (range(1, 11) as $i) {
+                $this->getJson(route('comments.index', $post))->assertOk();
+            }
+        });
+    });
+
     describe('update', function () {
         test('comment owner can update their comment', function () {
             $user = User::factory()->create();

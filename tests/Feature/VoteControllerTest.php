@@ -187,6 +187,24 @@ describe('VoteController', function () {
         });
     });
 
+    describe('rate limiting', function () {
+        test('upvote returns 429 after exceeding the votes rate limit', function () {
+            $user = User::factory()->create();
+            $status = PostStatus::factory()->published()->create();
+            $post = Post::factory()->create(['status_id' => $status->id]);
+
+            $this->actingAs($user);
+
+            foreach (range(1, 30) as $i) {
+                $this->postJson(route('votes.up', ['type' => 'post', 'id' => $post->id]))
+                    ->assertSuccessful();
+            }
+
+            $this->postJson(route('votes.up', ['type' => 'post', 'id' => $post->id]))
+                ->assertTooManyRequests();
+        });
+    });
+
     describe('vote score', function () {
         test('upvote increases post score', function () {
             $user = User::factory()->create();

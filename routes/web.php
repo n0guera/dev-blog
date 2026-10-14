@@ -19,13 +19,17 @@ Route::get('/posts/{post}/comments', [CommentController::class, 'index'])->name(
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::inertia('dashboard', 'Dashboard')->name('dashboard');
 
-    Route::post('/posts/{post}/comments', [CommentController::class, 'store'])->name('comments.store');
-    Route::put('/comments/{comment}', [CommentController::class, 'update'])->name('comments.update');
-    Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
+    Route::middleware('throttle:comments')->group(function () {
+        Route::post('/posts/{post}/comments', [CommentController::class, 'store'])->name('comments.store');
+        Route::put('/comments/{comment}', [CommentController::class, 'update'])->name('comments.update');
+        Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
+    });
 
-    Route::post('/votes/{type}/{id}/up', [VoteController::class, 'upvote'])->name('votes.up');
-    Route::post('/votes/{type}/{id}/down', [VoteController::class, 'downvote'])->name('votes.down');
-    Route::delete('/votes/{type}/{id}', [VoteController::class, 'removeVote'])->name('votes.remove');
+    Route::middleware('throttle:votes')->group(function () {
+        Route::post('/votes/{type}/{id}/up', [VoteController::class, 'upvote'])->name('votes.up');
+        Route::post('/votes/{type}/{id}/down', [VoteController::class, 'downvote'])->name('votes.down');
+        Route::delete('/votes/{type}/{id}', [VoteController::class, 'removeVote'])->name('votes.remove');
+    });
 });
 
 require __DIR__.'/admin.php';

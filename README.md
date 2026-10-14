@@ -147,7 +147,6 @@ database/
 
 ### Remaining Polish
 
-- [ ] Rate limiting on comment and vote routes
 - [ ] Final visual polish pass
 
 ## Architectural Decisions
