@@ -10,8 +10,15 @@ use Illuminate\Database\Seeder;
 
 class PostSeeder extends Seeder
 {
+    /**
+     * Seed demo posts. Must only ever run in the local environment.
+     */
     public function run(): void
     {
+        if (! app()->isLocal()) {
+            return;
+        }
+
         $admin = User::where('email', 'admin@example.com')->first();
         $user = User::where('email', 'test@example.com')->first();
         $publishedStatus = PostStatus::where('name', 'published')->first();

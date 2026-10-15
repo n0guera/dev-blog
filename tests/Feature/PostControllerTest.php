@@ -4,6 +4,8 @@ use App\Models\Post;
 use App\Models\PostStatus;
 use App\Models\Tag;
 use App\Models\User;
+use App\Models\Vote;
+use App\Models\VoteType;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
@@ -127,6 +129,62 @@ describe('PostController - Public Routes', function () {
 });
 
 describe('PostController - Admin Routes', function () {
+    test('admin can view posts index', function () {
+        $admin = User::factory()->admin()->create();
+        $status = PostStatus::factory()->draft()->create();
+        Post::factory()->create(['user_id' => $admin->id, 'status_id' => $status->id]);
+
+        $response = $this->actingAs($admin)->get(route('admin.posts.index'));
+
+        $response->assertOk();
+        $response->assertInertia(fn ($page) => $page
+            ->has('posts.data', 1)
+            ->where('posts.data.0.vote_score', 0)
+        );
+    });
+
+    test('index includes vote score and vote counts', function () {
+        $admin = User::factory()->admin()->create();
+        $status = PostStatus::factory()->draft()->create();
+        $post = Post::factory()->create(['user_id' => $admin->id, 'status_id' => $status->id]);
+
+        $upType = VoteType::factory()->up()->create();
+        $downType = VoteType::factory()->down()->create();
+
+        Vote::factory()->count(2)->create([
+            'votable_id' => $post->id,
+            'vote_type_id' => $upType->id,
+        ]);
+        Vote::factory()->create([
+            'votable_id' => $post->id,
+            'vote_type_id' => $downType->id,
+        ]);
+
+        $response = $this->actingAs($admin)->get(route('admin.posts.index'));
+
+        $response->assertOk();
+        $response->assertInertia(fn ($page) => $page
+            ->has('posts.data', 1)
+            ->where('posts.data.0.vote_score', 1)
+            ->where('posts.data.0.up_votes_count', 2)
+            ->where('posts.data.0.down_votes_count', 1)
+        );
+    });
+
+    test('regular user cannot view posts index', function () {
+        $user = User::factory()->regularUser()->create();
+
+        $response = $this->actingAs($user)->get(route('admin.posts.index'));
+
+        $response->assertForbidden();
+    });
+
+    test('unauthenticated user cannot view posts index', function () {
+        $response = $this->get(route('admin.posts.index'));
+
+        $response->assertRedirect();
+    });
+
     test('admin can access create form', function () {
         $admin = User::factory()->admin()->create();
 
@@ -150,6 +208,24 @@ describe('PostController - Admin Routes', function () {
         $response = $this->get(route('admin.posts.create'));
 
         $response->assertRedirect();
+    });
+
+    test('publishing a new post refreshes the latest posts cache', function () {
+        $admin = User::factory()->admin()->create();
+        $published = PostStatus::factory()->published()->create();
+
+        $this->get(route('home'))->assertOk();
+
+        $this->actingAs($admin)->post(route('admin.posts.store'), [
+            'title' => 'Freshly Published',
+            'content' => 'Body content',
+            'status_id' => $published->id,
+        ])->assertRedirect();
+
+        $this->get(route('home'))->assertInertia(fn ($page) => $page
+            ->has('latestPosts', 1)
+            ->where('latestPosts.0.title', 'Freshly Published')
+        );
     });
 
     test('admin can store a new post', function () {

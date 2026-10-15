@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Cache;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 
@@ -19,12 +20,20 @@ class Post extends Model
 {
     use HasFactory, HasSlug, SoftDeletes;
 
+    public const LATEST_POSTS_CACHE_KEY = 'latest_posts';
+
     protected function casts(): array
     {
         return [
             'published_at' => 'datetime',
             'deleted_at' => 'datetime',
         ];
+    }
+
+    protected static function booted(): void
+    {
+        static::saved(fn () => Cache::forget(self::LATEST_POSTS_CACHE_KEY));
+        static::deleted(fn () => Cache::forget(self::LATEST_POSTS_CACHE_KEY));
     }
 
     public function getSlugOptions(): SlugOptions
@@ -62,13 +71,13 @@ class Post extends Model
     public function upVotes(): MorphMany
     {
         return $this->morphMany(Vote::class, 'votable')
-            ->whereHas('voteType', fn($q) => $q->where('name', 'up'));
+            ->whereHas('voteType', fn ($q) => $q->where('name', 'up'));
     }
 
     public function downVotes(): MorphMany
     {
         return $this->morphMany(Vote::class, 'votable')
-            ->whereHas('voteType', fn($q) => $q->where('name', 'down'));
+            ->whereHas('voteType', fn ($q) => $q->where('name', 'down'));
     }
 
     public function scopeWithVotes($query): Builder

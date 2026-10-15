@@ -3,12 +3,13 @@ import { Link } from '@inertiajs/vue3';
 import { BookOpen, FolderGit2, LayoutGrid } from 'lucide-vue-next';
 import AppLogo from '@/components/AppLogo.vue';
 import NavFooter from '@/components/NavFooter.vue';
-import NavMain from '@/components/NavMain.vue';
 import NavUser from '@/components/NavUser.vue';
 import {
     Sidebar,
     SidebarContent,
     SidebarFooter,
+    SidebarGroup,
+    SidebarGroupContent,
     SidebarHeader,
     SidebarMenu,
     SidebarMenuButton,
@@ -54,7 +55,23 @@ const footerNavItems: NavItem[] = [
         </SidebarHeader>
 
         <SidebarContent>
-            <NavMain :items="mainNavItems" />
+            <SidebarGroup>
+                <SidebarGroupContent>
+                    <SidebarMenu>
+                        <SidebarMenuItem
+                            v-for="item in mainNavItems"
+                            :key="item.title"
+                        >
+                            <SidebarMenuButton as-child>
+                                <Link :href="item.href">
+                                    <component :is="item.icon" />
+                                    <span>{{ item.title }}</span>
+                                </Link>
+                            </SidebarMenuButton>
+                        </SidebarMenuItem>
+                    </SidebarMenu>
+                </SidebarGroupContent>
+            </SidebarGroup>
         </SidebarContent>
 
         <SidebarFooter>
