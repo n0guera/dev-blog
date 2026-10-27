@@ -22,6 +22,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.4'
+          tools: composer:v2
 
       - name: Check if composer.json exists
         id: check_files
@@ -31,14 +32,27 @@ jobs:
 
       - name: Run composer install if composer.json exists
         if: steps.check_files.outputs.files_exists == 'true'
-        run: composer validate --no-check-publish && composer install --prefer-dist --no-progress
+        run: composer validate --no-check-publish && composer install --prefer-dist --no-progress --no-dev --optimize-autoloader
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install NPM dependencies
+        run: npm install
+
+      - name: Build frontend assets
+        run: npm run build
+
+      - name: Zip the application files
+        run: zip -r release.zip ./* -x "node_modules/*"
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: php-app
-          path: .
+          path: release.zip
 
   deploy:
     runs-on: ubuntu-latest
@@ -52,7 +66,10 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: php-app
-      
+
+      - name: Unzip artifact
+        run: unzip -o release.zip
+
       - name: Login to Azure
         uses: azure/login@v2
         with:
@@ -67,4 +84,3 @@ jobs:
           app-name: 'devblog'
           slot-name: 'Production'
           package: .
-          
